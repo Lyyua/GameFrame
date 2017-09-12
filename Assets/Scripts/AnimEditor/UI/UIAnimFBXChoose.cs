@@ -12,7 +12,7 @@ public class UIAnimFBXChoose : UIBasePanel
 {
     public ScrollRect scrollRect;
     private ToggleGroup toggleGroup;
-    private string itemStr = "Prefabs/CharaceterItem";
+    private string itemStr = "Prefabs/CharacterItem";
     private Button sureButton;
     private Button backButton;
     private ToggleModel activeToggle;
@@ -50,14 +50,11 @@ public class UIAnimFBXChoose : UIBasePanel
             count++;
             temp.GetComponent<Toggle>().group = toggleGroup;
 
-
             ToggleModel tm = new ToggleModel();
             tm.itemName = info[i].Name.Remove(info[i].Name.Length - 4);
             Text text = TransformExtension.FindComponent<Text>(temp.transform, "Label");
             text.text = tm.itemName;
             tm.activeToggle = this.activeToggle;
-
-
 
             temp.GetComponent<Toggle>().onValueChanged.AddListener((value) => { tm.Click(value); });
 
