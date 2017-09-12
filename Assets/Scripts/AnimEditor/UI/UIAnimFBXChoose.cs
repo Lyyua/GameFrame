@@ -12,7 +12,7 @@ public class UIAnimFBXChoose : UIBasePanel
 {
     public ScrollRect scrollRect;
     private ToggleGroup toggleGroup;
-    private string itemStr = "CharaceterItem";
+    private string itemStr = "Prefabs/CharaceterItem";
     private Button sureButton;
     private Button backButton;
     private ToggleModel activeToggle;
