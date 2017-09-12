@@ -20,9 +20,9 @@ public abstract class UIBasePanel
     public void OnEnter()
     {
         Init();
+        OnAwakeInitUI();
         OnActiveBefore();
         OnActive();
-        OnAwakeInitUI();
     }
 
     public void Show()

@@ -5,11 +5,11 @@ using UnityEngine.UI;
 using LitJson;
 using System.Collections.Generic;
 
-public class UIAnimEditor : UIBasePanel
+public class UIAnimOPChoose : UIBasePanel
 {
     private Button loadAsset;
     private Button recordAsset;
-    public UIAnimEditor() : base("UI/AnimEditorUI")
+    public UIAnimOPChoose() : base("UI/AnimEditorUI")
     {
     }
 
@@ -24,12 +24,13 @@ public class UIAnimEditor : UIBasePanel
 
     void ConfirmAssetInfo()
     {
+        UIMainManager.Instance.HideCurPage();
         UILoadAssetInfo inputAsset = UIMainManager.Instance.PopPanel<UILoadAssetInfo>(AnimAssetCtrl.Instance.root);
     }
 
     void RecordAssetWindow()
     {
         UIMainManager.Instance.HideCurPage();
-        UIMainManager.Instance.PopPanel<UIRecordAnim>(AnimAssetCtrl.Instance.root);
+        UIMainManager.Instance.PopPanel<UIAnimFBXChoose>(AnimAssetCtrl.Instance.root);
     }
 }

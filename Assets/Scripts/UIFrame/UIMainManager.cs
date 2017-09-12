@@ -33,7 +33,10 @@ public class UIMainManager : MonoBehaviour
 
     private void Update()
     {
-        updateUIEvent();
+        if (updateUIEvent != null)
+        {
+            updateUIEvent();
+        }
     }
 
     public void RegisteFixedUpdate(OnFixedUpdate e)
@@ -48,7 +51,10 @@ public class UIMainManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        fixedupdateUIEvent();
+        if (fixedupdateUIEvent != null)
+        {
+            fixedupdateUIEvent();
+        }
     }
 
     public void AddPanel<T>() where T : UIBasePanel, new()
@@ -61,8 +67,6 @@ public class UIMainManager : MonoBehaviour
             UIDIC.Add(pageName, ui);
             curPage = ui;
             windowNavgation.Push(curPage);
-            updateUIEvent += curPage.OnUpdate;
-            fixedupdateUIEvent += curPage.OnFixedUpdate;
         }
         else
         {
