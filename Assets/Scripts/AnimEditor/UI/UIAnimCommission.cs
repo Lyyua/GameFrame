@@ -20,6 +20,7 @@ public class UIAnimCommission : UIBasePanel
     private Button sureCutButton;
     private Button frameCutButton;
     private Button curFrameCutButton;
+    private Button frameRevertButton;
 
     private Transform frameInfoPivot;
     private InputField pxo;
@@ -55,6 +56,8 @@ public class UIAnimCommission : UIBasePanel
         stopCommissionButton.onClick.AddListener(StopCommission);
         updateFrameInfoButton = TransformExtension.FindComponent<Button>(trans, "UpdateFrameInfoButton");
         updateFrameInfoButton.onClick.AddListener(UpdateFrameInfoClick);
+        frameRevertButton = TransformExtension.FindComponent<Button>(trans, "FrameRevertButton");
+        frameRevertButton.onClick.AddListener(FrameRevertClick);
 
         Transform curFrameCountPivot = TransformExtension.FindComponent<Transform>(trans, "CurFrameCount");
         curFrameCount = TransformExtension.FindComponent<Text>(curFrameCountPivot, "Text");
@@ -149,6 +152,11 @@ public class UIAnimCommission : UIBasePanel
     void UpdateFrameInfoClick()
     {
         frameInfoPivot.gameObject.SetActive(!frameInfoPivot.gameObject.activeSelf);
+    }
+
+    void FrameRevertClick()
+    {
+        AnimAssetCtrl.Instance.FrameRevert();
     }
 
     void SureFrameInfoClick()

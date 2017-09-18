@@ -218,4 +218,9 @@ public class AnimAssetCtrl : MonoBehaviour
             animList[i][headIndex].SetEuler(newEuler.x + euler.x, newEuler.y + euler.y, newEuler.z + euler.z);
         }
     }
+
+    public void FrameRevert()
+    {
+        animList.Reverse();
+    }
 }
