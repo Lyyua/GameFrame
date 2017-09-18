@@ -8,6 +8,7 @@ using LitJson;
 public class UILoadAssetInfo : UIBasePanel
 {
     private Button startLoad;
+    private Button backButton;
     private InputField assetBundleName;
     private InputField assetName;
 
@@ -19,6 +20,9 @@ public class UILoadAssetInfo : UIBasePanel
     {
         startLoad = TransformExtension.FindComponent<Button>(trans, "StartLoad");
         startLoad.onClick.AddListener(LoadAsset);
+
+        backButton = TransformExtension.FindComponent<Button>(trans, "BackButton");
+        backButton.onClick.AddListener(Back);
 
         assetBundleName = TransformExtension.FindComponent<InputField>(trans, "AssetBundleName");
         assetName = TransformExtension.FindComponent<InputField>(trans, "AssetName");
@@ -39,5 +43,10 @@ public class UILoadAssetInfo : UIBasePanel
         www.Dispose();
         UIMainManager.Instance.ShutPanel<UILoadAssetInfo>();
         UIMainManager.Instance.PopPanel<UIAnimCommission>(AnimAssetCtrl.Instance.root);
+    }
+
+    void Back()
+    {
+        UIMainManager.Instance.BackPreWindow();
     }
 }

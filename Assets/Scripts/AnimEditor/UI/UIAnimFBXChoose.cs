@@ -56,7 +56,9 @@ public class UIAnimFBXChoose : UIBasePanel
             text.text = tm.itemName;
             tm.activeToggle = this.activeToggle;
 
-            temp.GetComponent<Toggle>().onValueChanged.AddListener((value) => { tm.Click(value); });
+            UnityAction<bool> ua = tm.Click;
+            temp.GetComponent<Toggle>().onValueChanged.AddListener(ua);
+            //temp.GetComponent<Toggle>().onValueChanged.AddListener((value) => { tm.Click(value); });
 
         }
         RectTransform rf = (RectTransform)toggleGroup.transform;
@@ -91,12 +93,20 @@ public class ToggleModel
 
     public void Click(bool value)
     {
-        activeToggle = this;
-        itemName.EndsWith(".fbx");
+        if (value)
+        {
+            activeToggle = this;
+            itemName.EndsWith(".fbx");
 
-        GameObject temp = GameObject.Instantiate(Resources.Load("FBX/" + itemName)) as GameObject;
-        temp.transform.parent = AnimAssetCtrl.Instance.modelRoot;
-        temp.transform.localPosition = Vector3.zero;
-        AnimAssetCtrl.Instance.SetModel(temp);
+            GameObject temp = GameObject.Instantiate(Resources.Load("FBX/" + itemName)) as GameObject;
+            temp.transform.parent = AnimAssetCtrl.Instance.modelRoot;
+            temp.transform.localPosition = Vector3.zero;
+            AnimAssetCtrl.Instance.SetModel(temp);
+        }
+        else
+        {
+            AnimAssetCtrl.Instance.DestroyModel();
+        }
+
     }
 }

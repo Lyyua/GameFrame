@@ -17,6 +17,9 @@ public class UIAnimCommission : UIBasePanel
     private Button sureButton;
     private Button backButton;
     private Button allAplyButton;
+    private Button sureCutButton;
+    private Button frameCutButton;
+    private Button curFrameCutButton;
 
     private Transform frameInfoPivot;
     private InputField pxo;
@@ -26,6 +29,12 @@ public class UIAnimCommission : UIBasePanel
     private InputField exo;
     private InputField eyo;
     private InputField ezo;
+
+    private Transform frameCutInfoPivot;
+    private InputField frameStart;
+    private InputField frameEnd;
+
+    private Text curFrameCount;
 
     private Dropdown commissionPlayStyle;  // once or loop
 
@@ -47,6 +56,9 @@ public class UIAnimCommission : UIBasePanel
         updateFrameInfoButton = TransformExtension.FindComponent<Button>(trans, "UpdateFrameInfoButton");
         updateFrameInfoButton.onClick.AddListener(UpdateFrameInfoClick);
 
+        Transform curFrameCountPivot = TransformExtension.FindComponent<Transform>(trans, "CurFrameCount");
+        curFrameCount = TransformExtension.FindComponent<Text>(curFrameCountPivot, "Text");
+
         backButton = TransformExtension.FindComponent<Button>(trans, "BackButton");
         backButton.onClick.AddListener(Back);
 
@@ -63,10 +75,26 @@ public class UIAnimCommission : UIBasePanel
         sureButton = TransformExtension.FindComponent<Button>(frameInfoPivot, "SureButton");
         sureButton.onClick.AddListener(SureFrameInfoClick);
 
+        frameCutButton = TransformExtension.FindComponent<Button>(trans, "FrameCutButton");
+        frameCutButton.onClick.AddListener(ShowCutFrame);
+
+        curFrameCutButton = TransformExtension.FindComponent<Button>(trans, "CurFrameCutButton");
+        curFrameCutButton.onClick.AddListener(CurFrameCut);
+
+        frameCutInfoPivot = TransformExtension.FindComponent<Transform>(trans, "FrameCutInfoPivot");
+
+        frameStart = TransformExtension.FindComponent<InputField>(frameCutInfoPivot, "FrameStart");
+        frameEnd = TransformExtension.FindComponent<InputField>(frameCutInfoPivot, "FrameEnd");
+
+        sureCutButton = TransformExtension.FindComponent<Button>(frameCutInfoPivot, "SureCutButton");
+        sureCutButton.onClick.AddListener(SureCutFrame);
+
         allAplyButton = TransformExtension.FindComponent<Button>(frameInfoPivot, "AllAplyButton");
         allAplyButton.onClick.AddListener(AllFrameAply);
 
         commissionPlayStyle = TransformExtension.FindComponent<Dropdown>(trans, "CommissionPlayStyle");
+
+        StartFrameCommission();
     }
 
     public override void OnUpdate()
@@ -99,15 +127,18 @@ public class UIAnimCommission : UIBasePanel
     {
         ConfirmAnimOpShut();
         curAnimIndex = 0;
+        curFrameCount.text = curAnimIndex.ToString();
         AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
         AnimAssetCtrl.Instance.InitCurFrameInfo();
-        nextAnimIndex = 1;
+        curAnimIndex++;
     }
 
     private void NextFrame()
     {
-        bool complete = AnimAssetCtrl.Instance.NodeAnimPlay(ref nextAnimIndex);
+        ConfirmAnimOpShut();
+        bool complete = AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
         AnimAssetCtrl.Instance.InitCurFrameInfo();
+        curFrameCount.text = curAnimIndex.ToString();
         if (!complete)
         {
             curAnimIndex++;
@@ -148,6 +179,22 @@ public class UIAnimCommission : UIBasePanel
         ezo.text = "0";
     }
 
+    void ShowCutFrame()
+    {
+        frameCutInfoPivot.gameObject.SetActive(true);
+    }
+
+    void SureCutFrame()
+    {
+        AnimAssetCtrl.Instance.AnimListCut(int.Parse(frameStart.text), int.Parse(frameEnd.text));
+        frameCutInfoPivot.gameObject.SetActive(false);
+    }
+
+    void CurFrameCut()
+    {
+        AnimAssetCtrl.Instance.CurFramecCut(curAnimIndex);
+    }
+
     void Back()
     {
         UIMainManager.Instance.BackPreWindow();
@@ -180,6 +227,7 @@ public class UIAnimCommission : UIBasePanel
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForEndOfFrame();
                 AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
+                curFrameCount.text = curAnimIndex.ToString();
                 curAnimIndex++;
 
                 while (true)
@@ -187,6 +235,7 @@ public class UIAnimCommission : UIBasePanel
                     yield return new WaitForFixedUpdate();
                     yield return new WaitForEndOfFrame();
                     bool complete = AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
+                    curFrameCount.text = curAnimIndex.ToString();
                     if (complete)
                     {
                         break;
@@ -201,12 +250,13 @@ public class UIAnimCommission : UIBasePanel
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForEndOfFrame();
                 AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
-
+                curFrameCount.text = curAnimIndex.ToString();
                 while (true)
                 {
                     yield return new WaitForFixedUpdate();
                     yield return new WaitForEndOfFrame();
                     bool complete = AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
+                    curFrameCount.text = curAnimIndex.ToString();
                     if (complete)
                     {
                         curAnimIndex = 0;

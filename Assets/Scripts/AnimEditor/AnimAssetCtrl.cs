@@ -13,6 +13,7 @@ public class AnimAssetCtrl : MonoBehaviour
     public GameObject headObj;
     private Animation curAnim;
     private List<Nodes[]> animList = new List<Nodes[]>();
+    private List<Nodes[]> backAnimList = new List<Nodes[]>();
     private Transform[] nodeList;
     private Transform head;
     private int headIndex;
@@ -87,6 +88,7 @@ public class AnimAssetCtrl : MonoBehaviour
     public void AnimListClear()
     {
         animList.Clear();
+        backAnimList = null;
     }
 
     public void SetAnimList(List<Nodes[]> list)
@@ -123,6 +125,42 @@ public class AnimAssetCtrl : MonoBehaviour
         }
         if (index == animList.Count - 1) return true;
         return false;
+    }
+
+    public void AnimListCut(int start, int end)
+    {
+        if (backAnimList == null)
+        {
+            backAnimList = animList;
+        }
+        if (start < 0 || start > backAnimList.Count - 1)
+        {
+            return;
+        }
+        if (end < 0 || end > backAnimList.Count - 1)
+        {
+            return;
+        }
+        animList = new List<Nodes[]>();
+        for (int i = start; i < backAnimList.Count; i++)
+        {
+            animList.Add(backAnimList[i]);
+            if (i == end)
+            {
+                return;
+            }
+        }
+    }
+
+    public void CurFramecCut(int index)
+    {
+        if (backAnimList == null)
+        {
+            backAnimList = animList;
+        }
+
+        animList = new List<Nodes[]>();
+        animList.Add(backAnimList[index]);
     }
 
     [MenuItem("Assets/Build AssetBundles")]
