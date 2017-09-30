@@ -7,12 +7,14 @@
     MoveFoward,
     MoveBack,
 
-    IdleReload,
+    Reload,
 
+    Aim,
     TurnOnAim,
     TurnOffAim,
-    Aim,
-    Squart,
 
-    Stand,
+    IdleToSquat,
+    SquatToIdle,
+
+    Fire,
 }

@@ -3,18 +3,16 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurnOffAimPlay : BaseAnimationPlay
+public class IdleToSquatPlay : BaseAnimationPlay
 {
-    AnimationCMD curCMD;
-    AnimationCMD lastCMD;
-
     private GameObject _player;
     private AnimationNodesCycle _anim;
     private SignalDispatchSystem _sys;
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
     int _irow = 0;
+    bool hasHold = false;
 
-    public TurnOffAimPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
+    public IdleToSquatPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
     {
         _player = player;
         _anim = anim;
@@ -24,21 +22,31 @@ public class TurnOffAimPlay : BaseAnimationPlay
     public override void HandleInput(ref AnimationState state, ref BaseAnimationPlay curAnim, List<AnimationCMD> cmds)
     {
         curAnim = this;
-        curAnimData = ClientGameManager.instance.animAssetInfo.shootStand_idle;
-        state = AnimationState.TurnOffAim;
+        curAnimData = ClientGameManager.instance.animAssetInfo.shoot_stand_squat;
+        state = AnimationState.IdleToSquat;
     }
 
     public override void OnExit()
     {
         _irow = 0;
+        hasHold = false;
     }
     public override void OnUpdate()
     {
-        bool complete = _anim.AnimPlay(curAnimData, ref _irow);
+        bool complete = false;
+        if (hasHold)
+        {
+            complete = _anim.AnimPlayLowerBody(curAnimData, ref _irow);
+        }
+        else
+        {
+            complete = _anim.AnimPlay(curAnimData, ref _irow);
+            hasHold = true;
+        }
         if (complete)
         {
-            _irow = 0;
-            _sys.SetCurAnim(_sys.idle, AnimationCMD.None);
+            OnExit();
+            _sys.SetCurAnim(_sys.squat, AnimationCMD.None);
         }
         else
         {

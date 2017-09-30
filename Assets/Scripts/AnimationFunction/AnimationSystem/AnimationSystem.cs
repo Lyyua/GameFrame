@@ -1,14 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
-public class AnimationSystem : MonoBehaviour
+public class AnimationSystem
 {
-    public AnimationState curState = AnimationState.Idle;
-    //public AnimationState lastState = AnimationState.Idle;
-    public BaseAnimationPlay curAnimPlay = null;
-    private AnimationNodesCycle anim;
-
+    public GameObject curGo;
+    public AnimationNodesCycle anim;
     public IdleMoveAnimationPlay idleMove;
     public IdleAnimationPlay idle;
     public TurnOnAimPlay turnOnAim;
@@ -16,62 +11,64 @@ public class AnimationSystem : MonoBehaviour
     public AimAnimationPlay aim;
     public AimMoveAnimationPlay aimMove;
     public IdleReloadAnimationPlay idleReload;
+    public IdleToSquatPlay idleToSquat;
+    public SquatToIdlePlay squatToIdle;
+    public SquatAnimationPlay squat;
+    public SquatMoveAnimationPlay squatMove;
+    public SquatReloadAnimationPlay squatReload;
+    public AimToSquatPlay aimToSquat;
+    public DeadAnimationPlay dead;
 
-    private void Start()
+    private void InitAnimation()
     {
-        anim = GetComponent<AnimationNodesCycle>();
-        idleMove = new IdleMoveAnimationPlay(gameObject, this, anim);
-        idle = new IdleAnimationPlay(gameObject, this, anim);
-        turnOnAim = new TurnOnAimPlay(gameObject, this, anim);
-        turnOffAim = new TurnOffAimPlay(gameObject, this, anim);
-        aim = new AimAnimationPlay(gameObject, this, anim);
-        aimMove = new AimMoveAnimationPlay(gameObject, this, anim);
-        idleReload = new IdleReloadAnimationPlay(gameObject, this, anim);
+        //idleMove = new IdleMoveAnimationPlay(curGo, this, anim);
+        //idle = new IdleAnimationPlay(curGo, this, anim);
+        //turnOnAim = new TurnOnAimPlay(curGo, this, anim);
+        //turnOffAim = new TurnOffAimPlay(curGo, this, anim);
+        //aim = new AimAnimationPlay(curGo, this, anim);
+        //aimMove = new AimMoveAnimationPlay(curGo, this, anim);
+        //idleReload = new IdleReloadAnimationPlay(curGo, this, anim);
+        //idleToSquat = new IdleToSquatPlay(curGo, this, anim);
+        //squatToIdle = new SquatToIdlePlay(curGo, this, anim);
+        //squat = new SquatAnimationPlay(curGo, this, anim);
+        //squatMove = new SquatMoveAnimationPlay(curGo, this, anim);
+        //squatReload = new SquatReloadAnimationPlay(curGo, this, anim);
+        //aimToSquat = new AimToSquatPlay(curGo, this, anim);
+        //dead = new DeadAnimationPlay(curGo, this, anim);
     }
 
-    public void Analysis(List<AnimationCMD> cmds)
-    {
-        //AnyTime  die
-
-        //General
-        switch (curState)
-        {
-            case AnimationState.Idle:
-                idle.HandleInput(ref curState, ref curAnimPlay, cmds);
-                break;
-            case AnimationState.TurnOnAim:
-                break;
-            case AnimationState.TurnOffAim:
-                break;
-            case AnimationState.IdleMove:
-                idleMove.HandleInput(ref curState, ref curAnimPlay, cmds);
-                break;
-            case AnimationState.Aim:
-                aim.HandleInput(ref curState, ref curAnimPlay, cmds);
-                break;
-            case AnimationState.IdleReload:
-                idleReload.HandleInput(ref curState, ref curAnimPlay, cmds);
-                break;
-            case AnimationState.AimMove:
-                aimMove.HandleInput(ref curState, ref curAnimPlay, cmds);
-                break;
-        }
-    }
-
-    //状态中转
-    public void SetCurAnim(BaseAnimationPlay anim, AnimationCMD cmd)
-    {
-        List<AnimationCMD> cmds = new List<AnimationCMD>();
-        cmds.Add(cmd);
-        curAnimPlay = anim;
-        anim.HandleInput(ref curState, ref curAnimPlay, cmds);
-    }
-
-    private void FixedUpdate()
-    {
-        if (curAnimPlay != null)
-        {
-            curAnimPlay.OnUpdate();
-        }
-    }
+    //void StateSwitch()
+    //{
+    //    switch (curState)
+    //    {
+    //        case AnimationState.Idle:
+    //            idle.HandleInput(ref curState, ref curAnimPlay, _cmds);
+    //            break;
+    //        case AnimationState.IdleMove:
+    //            idleMove.HandleInput(ref curState, ref curAnimPlay, _cmds);
+    //            break;
+    //        case AnimationState.Aim:
+    //            aim.HandleInput(ref curState, ref curAnimPlay, _cmds);
+    //            break;
+    //        case AnimationState.IdleReload:
+    //            idleReload.HandleInput(ref curState, ref curAnimPlay, _cmds);
+    //            break;
+    //        case AnimationState.AimMove:
+    //            aimMove.HandleInput(ref curState, ref curAnimPlay, _cmds);
+    //            break;
+    //        case AnimationState.Squat:
+    //            squat.HandleInput(ref curState, ref curAnimPlay, _cmds);
+    //            break;
+    //        case AnimationState.SquatMove:
+    //            squatMove.HandleInput(ref curState, ref curAnimPlay, _cmds);
+    //            break;
+    //        case AnimationState.SquatReload:
+    //            squatReload.HandleInput(ref curState, ref curAnimPlay, _cmds);
+    //            break;
+    //        case AnimationState.SquatToIdle:
+    //            squatToIdle.HandleInput(ref curState, ref curAnimPlay, _cmds);
+    //            break;
+    //    }
+    //}
 }
+

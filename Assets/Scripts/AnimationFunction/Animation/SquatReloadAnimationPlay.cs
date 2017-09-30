@@ -3,10 +3,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurnOffAimPlay : BaseAnimationPlay
+public class SquatReloadAnimationPlay : BaseAnimationPlay
 {
     AnimationCMD curCMD;
-    AnimationCMD lastCMD;
 
     private GameObject _player;
     private AnimationNodesCycle _anim;
@@ -14,7 +13,7 @@ public class TurnOffAimPlay : BaseAnimationPlay
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
     int _irow = 0;
 
-    public TurnOffAimPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
+    public SquatReloadAnimationPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
     {
         _player = player;
         _anim = anim;
@@ -23,9 +22,13 @@ public class TurnOffAimPlay : BaseAnimationPlay
 
     public override void HandleInput(ref AnimationState state, ref BaseAnimationPlay curAnim, List<AnimationCMD> cmds)
     {
+        if (_irow == 0)
+        {
+            _sys.audioCtrl.PlayReLoadAudio(_anim.spawnPoint);
+        }
         curAnim = this;
-        curAnimData = ClientGameManager.instance.animAssetInfo.shootStand_idle;
-        state = AnimationState.TurnOffAim;
+        curAnimData = ClientGameManager.instance.animAssetInfo.reload_squat;
+        state = AnimationState.SquatReload;
     }
 
     public override void OnExit()
@@ -37,8 +40,9 @@ public class TurnOffAimPlay : BaseAnimationPlay
         bool complete = _anim.AnimPlay(curAnimData, ref _irow);
         if (complete)
         {
-            _irow = 0;
-            _sys.SetCurAnim(_sys.idle, AnimationCMD.None);
+            OnExit();
+            _sys.SetCurAnim(_sys.squat, AnimationCMD.None);
+            _sys.autoFire.BulletCountReset();
         }
         else
         {

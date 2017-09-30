@@ -9,12 +9,12 @@ public class AimAnimationPlay : BaseAnimationPlay
     AnimationCMD lastCMD;
 
     private GameObject _player;
-    private AnimationSystem _sys;
+    private SignalDispatchSystem _sys;
     private AnimationNodesCycle _anim;
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
     int _irow = 0;
 
-    public AimAnimationPlay(GameObject player, AnimationSystem sys, AnimationNodesCycle anim)
+    public AimAnimationPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
     {
         _player = player;
         _sys = sys;
@@ -30,10 +30,11 @@ public class AimAnimationPlay : BaseAnimationPlay
             //指令发生改变，强制中断切换
             _irow = 0;
         }
+        curAnim = this;
         switch (curCMD)
         {
             case AnimationCMD.None:
-                OnExit();
+                state = AnimationState.Aim;
                 curAnimData = ClientGameManager.instance.animAssetInfo.fire_stand_0;
                 break;
             case AnimationCMD.MoveLeft:
@@ -52,7 +53,7 @@ public class AimAnimationPlay : BaseAnimationPlay
                 OnExit();
                 _sys.SetCurAnim(_sys.aimMove, curCMD);
                 break;
-            case AnimationCMD.IdleReload:
+            case AnimationCMD.Reload:
                 OnExit();
                 _sys.SetCurAnim(_sys.idleReload, curCMD);
                 break;
@@ -64,9 +65,9 @@ public class AimAnimationPlay : BaseAnimationPlay
                 OnExit();
                 _sys.SetCurAnim(_sys.turnOffAim, curCMD);
                 break;
-            case AnimationCMD.Squart:
-                break;
-            case AnimationCMD.Stand:
+            case AnimationCMD.IdleToSquat:
+                OnExit();
+                _sys.SetCurAnim(_sys.aimToSquat, curCMD);
                 break;
         }
     }
@@ -79,6 +80,7 @@ public class AimAnimationPlay : BaseAnimationPlay
     public override void OnUpdate()
     {
         bool complete = _anim.AnimPlay(curAnimData, ref _irow);
+
         if (complete)
         {
             _irow = 0;
@@ -94,14 +96,19 @@ public class AimAnimationPlay : BaseAnimationPlay
         curCMD = AnimationCMD.None;
         for (int i = 0; i < cmds.Count; i++)
         {
-            if (cmds[i] == AnimationCMD.TurnOnAim)
+            if (cmds[i] == AnimationCMD.TurnOnAim || cmds[i] == AnimationCMD.SquatToIdle)
             {
                 continue;
             }
-            else if (cmds[i] == AnimationCMD.IdleReload)
+            else if (cmds[i] == AnimationCMD.Reload)
             {
-                curCMD = AnimationCMD.IdleReload;
+                curCMD = AnimationCMD.Reload;
                 return;
+            }
+            else if (cmds[i] == AnimationCMD.Fire)
+            {
+                _sys.autoFire.Fire(true);
+                continue;
             }
             curCMD = cmds[i];
         }

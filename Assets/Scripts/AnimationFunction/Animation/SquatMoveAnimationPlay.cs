@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AimMoveAnimationPlay : BaseAnimationPlay
+public class SquatMoveAnimationPlay : BaseAnimationPlay
 {
     AnimationCMD curCMD;
     AnimationCMD lastCMD;
@@ -14,7 +14,7 @@ public class AimMoveAnimationPlay : BaseAnimationPlay
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
     int _irow;
 
-    public AimMoveAnimationPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
+    public SquatMoveAnimationPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
     {
         _player = player;
         _anim = anim;
@@ -35,12 +35,11 @@ public class AimMoveAnimationPlay : BaseAnimationPlay
         {
             case AnimationCMD.None:
                 OnExit();
-                _sys.SetCurAnim(_sys.aim, AnimationCMD.Aim);
+                _sys.SetCurAnim(_sys.squat, AnimationCMD.None);
                 break;
             case AnimationCMD.MoveLeft:
-                curAnimData = ClientGameManager.instance.animAssetInfo.left_stand_shoot;
-                state = AnimationState.AimMove;
-                _sys.audioCtrl.PlayWalkAudio(_player.transform);
+                curAnimData = ClientGameManager.instance.animAssetInfo.left_squat_shoot;
+                state = AnimationState.SquatMove;
                 if (_sys.netView == null) return;
                 if (_sys.netView.isMine)
                 {
@@ -48,9 +47,8 @@ public class AimMoveAnimationPlay : BaseAnimationPlay
                 }
                 return;
             case AnimationCMD.MoveRight:
-                curAnimData = ClientGameManager.instance.animAssetInfo.right_stand_shoot;
-                state = AnimationState.AimMove;
-                _sys.audioCtrl.PlayWalkAudio(_player.transform);
+                curAnimData = ClientGameManager.instance.animAssetInfo.right_squat_shoot;
+                state = AnimationState.SquatMove;
                 if (_sys.netView == null) return;
                 if (_sys.netView.isMine)
                 {
@@ -58,9 +56,8 @@ public class AimMoveAnimationPlay : BaseAnimationPlay
                 }
                 return;
             case AnimationCMD.MoveFoward:
-                curAnimData = ClientGameManager.instance.animAssetInfo.forward_stand_shoot;
-                state = AnimationState.AimMove;
-                _sys.audioCtrl.PlayWalkAudio(_player.transform);
+                curAnimData = ClientGameManager.instance.animAssetInfo.forward_squat_shoot;
+                state = AnimationState.SquatMove;
                 if (_sys.netView == null) return;
                 if (_sys.netView.isMine)
                 {
@@ -68,9 +65,8 @@ public class AimMoveAnimationPlay : BaseAnimationPlay
                 }
                 return;
             case AnimationCMD.MoveBack:
-                curAnimData = ClientGameManager.instance.animAssetInfo.back_stand_shoot;
-                state = AnimationState.AimMove;
-                _sys.audioCtrl.PlayWalkAudio(_player.transform);
+                curAnimData = ClientGameManager.instance.animAssetInfo.back_squat_shoot;
+                state = AnimationState.SquatMove;
                 if (_sys.netView == null) return;
                 if (_sys.netView.isMine)
                 {
@@ -79,15 +75,11 @@ public class AimMoveAnimationPlay : BaseAnimationPlay
                 return;
             case AnimationCMD.Reload:
                 OnExit();
-                _sys.SetCurAnim(_sys.idleReload, curCMD);
+                _sys.SetCurAnim(_sys.squatReload, curCMD);
                 break;
-            case AnimationCMD.TurnOffAim:
+            case AnimationCMD.SquatToIdle:
                 OnExit();
-                _sys.SetCurAnim(_sys.idle, AnimationCMD.None);
-                break;
-            case AnimationCMD.IdleToSquat:
-                OnExit();
-                _sys.SetCurAnim(_sys.aimToSquat, curCMD);
+                _sys.SetCurAnim(_sys.squatToIdle, curCMD);
                 break;
         }
     }
@@ -97,18 +89,13 @@ public class AimMoveAnimationPlay : BaseAnimationPlay
         curCMD = AnimationCMD.None;
         for (int i = 0; i < cmds.Count; i++)
         {
-            if (cmds[i] == AnimationCMD.TurnOnAim || cmds[i] == AnimationCMD.SquatToIdle)
+            if (cmds[i] == AnimationCMD.TurnOnAim || cmds[i] == AnimationCMD.TurnOffAim || cmds[i] == AnimationCMD.IdleToSquat)
             {
                 continue;
             }
             else if (cmds[i] == AnimationCMD.Reload)
             {
                 curCMD = AnimationCMD.Reload;
-                return;
-            }
-            else if (cmds[i] == AnimationCMD.TurnOffAim)
-            {
-                curCMD = AnimationCMD.TurnOffAim;
                 return;
             }
             else if (cmds[i] == AnimationCMD.Fire)
@@ -128,7 +115,7 @@ public class AimMoveAnimationPlay : BaseAnimationPlay
 
     public override void OnUpdate()
     {
-        bool complete = _anim.AnimPlayLowerBody(curAnimData, ref _irow);
+        bool complete = _anim.AnimPlay(curAnimData, ref _irow);
         if (complete)
         {
             _irow = 0;

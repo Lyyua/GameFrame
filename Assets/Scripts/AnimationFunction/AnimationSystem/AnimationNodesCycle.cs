@@ -4,10 +4,13 @@ using System.Collections.Generic;
 
 public class AnimationNodesCycle : MonoBehaviour
 {
+    public Transform head;
+    public Transform spine2;
     public Transform body;
     public Transform hands;
-    private Transform[] nodesArray;
-    private Transform[] handsNodesArray;
+    public Transform spawnPoint;
+    public Transform[] nodesArray;
+    public Transform[] handsNodesArray;
     private Transform[] tempNodesArray;
     private Transform[] tempHandsNodesArray;
     private void Awake()

@@ -8,20 +8,20 @@ public class IdleMoveAnimationPlay : BaseAnimationPlay
     AnimationCMD curCMD;
     AnimationCMD lastCMD;
 
-    private float lastFootstepTime;
     private GameObject _player;
     private AnimationNodesCycle _anim;
-    private AnimationSystem _sys;
+    private SignalDispatchSystem _sys;
+
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
+    bool runTag;
     int _irow;
 
-    public IdleMoveAnimationPlay(GameObject player, AnimationSystem sys, AnimationNodesCycle anim)
+    public IdleMoveAnimationPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
     {
         _player = player;
         _anim = anim;
         _sys = sys;
     }
-
     public override void HandleInput(ref AnimationState state, ref BaseAnimationPlay curAnim, List<AnimationCMD> cmds)
     {
         CMDFilter(cmds);
@@ -31,7 +31,7 @@ public class IdleMoveAnimationPlay : BaseAnimationPlay
             //指令发生改变，强制中断切换
             _irow = 0;
         }
-
+        curAnim = this;
         switch (curCMD)
         {
             case AnimationCMD.None:
@@ -41,26 +41,73 @@ public class IdleMoveAnimationPlay : BaseAnimationPlay
             case AnimationCMD.MoveLeft:
                 curAnimData = ClientGameManager.instance.animAssetInfo.left_stand;
                 state = AnimationState.IdleMove;
-                curAnim = _sys.idleMove;
+                _sys.audioCtrl.PlayWalkAudio(_player.transform);
+                if (_sys.netView == null) return;
+                if (_sys.netView.isMine)
+                {
+                    _sys.moveCtrl.Move(-1, 0);
+                }
                 return;
             case AnimationCMD.MoveRight:
                 curAnimData = ClientGameManager.instance.animAssetInfo.right_stand;
                 state = AnimationState.IdleMove;
-                curAnim = _sys.idleMove;
+                _sys.audioCtrl.PlayWalkAudio(_player.transform);
+                if (_sys.netView == null) return;
+                if (_sys.netView.isMine)
+                {
+                    _sys.moveCtrl.Move(1, 0);
+                }
                 return;
             case AnimationCMD.MoveFoward:
-                curAnimData = ClientGameManager.instance.animAssetInfo.forward_stand;
+                if (runTag != _sys._isRun)
+                {
+                    //走跑切换后，索引重置
+                    _irow = 0;
+                    runTag = _sys._isRun;
+                }
+                if (_sys._isRun)
+                {
+                    curAnimData = ClientGameManager.instance.animAssetInfo.run;
+                    _sys.audioCtrl.PlayRunAudio(_player.transform);
+                    if (_sys.netView == null) return;
+                    if (_sys.netView.isMine)
+                    {
+                        _sys.moveCtrl.Move(0, 2);
+                    }
+                }
+                else
+                {
+                    curAnimData = ClientGameManager.instance.animAssetInfo.forward_stand;
+                    _sys.audioCtrl.PlayWalkAudio(_player.transform);
+                    if (_sys.netView == null) return;
+                    if (_sys.netView.isMine)
+                    {
+                        _sys.moveCtrl.Move(0, 1);
+                    }
+                }
                 state = AnimationState.IdleMove;
-                curAnim = _sys.idleMove;
                 return;
             case AnimationCMD.MoveBack:
                 curAnimData = ClientGameManager.instance.animAssetInfo.back_stand;
                 state = AnimationState.IdleMove;
-                curAnim = _sys.idleMove;
+                _sys.audioCtrl.PlayWalkAudio(_player.transform);
+                if (_sys.netView == null) return;
+                if (_sys.netView.isMine)
+                {
+                    _sys.moveCtrl.Move(0, -1);
+                }
                 return;
+            case AnimationCMD.Reload:
+                OnExit();
+                _sys.SetCurAnim(_sys.idleReload, curCMD);
+                break;
             case AnimationCMD.TurnOnAim:
                 OnExit();
                 _sys.SetCurAnim(_sys.aim, AnimationCMD.Aim);
+                break;
+            case AnimationCMD.IdleToSquat:
+                OnExit();
+                _sys.SetCurAnim(_sys.idleToSquat, curCMD);
                 break;
         }
     }
@@ -68,6 +115,7 @@ public class IdleMoveAnimationPlay : BaseAnimationPlay
     public override void OnExit()
     {
         _irow = 0;
+        _sys.moveCtrl.Move(0, 0);
     }
 
     public override void OnUpdate()
@@ -89,11 +137,11 @@ public class IdleMoveAnimationPlay : BaseAnimationPlay
         curCMD = AnimationCMD.None;
         for (int i = 0; i < cmds.Count; i++)
         {
-            if (cmds[i] == AnimationCMD.TurnOffAim)
+            if (cmds[i] == AnimationCMD.TurnOffAim || cmds[i] == AnimationCMD.SquatToIdle)
             {
                 continue;
             }
-            else if (cmds[i] == AnimationCMD.IdleReload)
+            else if (cmds[i] == AnimationCMD.Reload)
             {
                 curCMD = cmds[i];
                 return;
@@ -103,25 +151,12 @@ public class IdleMoveAnimationPlay : BaseAnimationPlay
                 curCMD = cmds[i];
                 return;
             }
+            else if (cmds[i] == AnimationCMD.Fire)
+            {
+                _sys.autoFire.Fire(false);
+                continue;
+            }
             curCMD = cmds[i];
-        }
-    }
-
-    public void PlayWalkAudio()
-    {
-        if (Time.time > lastFootstepTime + 0.55f)
-        {
-            EffectManager.PlayEffect("Walk", _player.transform.position, _player.transform.rotation);
-            lastFootstepTime = Time.time;
-        }
-    }
-
-    public void PlayRunAudio()
-    {
-        if (Time.time > lastFootstepTime + 0.37f)
-        {
-            EffectManager.PlayEffect("Run", _player.transform.position, _player.transform.rotation);
-            lastFootstepTime = Time.time;
         }
     }
 }

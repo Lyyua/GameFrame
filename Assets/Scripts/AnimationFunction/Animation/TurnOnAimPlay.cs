@@ -10,11 +10,11 @@ public class TurnOnAimPlay : BaseAnimationPlay
 
     private GameObject _player;
     private AnimationNodesCycle _anim;
-    private AnimationSystem _sys;
+    private SignalDispatchSystem _sys;
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
     int _irow = 0;
 
-    public TurnOnAimPlay(GameObject player, AnimationSystem sys, AnimationNodesCycle anim)
+    public TurnOnAimPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
     {
         _player = player;
         _anim = anim;
@@ -23,43 +23,16 @@ public class TurnOnAimPlay : BaseAnimationPlay
 
     public override void HandleInput(ref AnimationState state, ref BaseAnimationPlay curAnim, List<AnimationCMD> cmds)
     {
-        if (lastCMD != curCMD)
-        {
-            lastCMD = curCMD;
-            //指令发生改变，不可中断
-            return;
-        }
+        curAnim = this;
         curAnimData = ClientGameManager.instance.animAssetInfo.idle_shootStand;
         state = AnimationState.TurnOnAim;
     }
 
     public override void OnExit()
     {
-
+        _irow = 0;
     }
 
-    void CMDFilter(List<AnimationCMD> cmds)
-    {
-        curCMD = AnimationCMD.None;
-        for (int i = 0; i < cmds.Count; i++)
-        {
-            if (cmds[i] == AnimationCMD.TurnOnAim)
-            {
-                continue;
-            }
-            else if (cmds[i] == AnimationCMD.IdleReload)
-            {
-                curCMD = AnimationCMD.IdleReload;
-                return;
-            }
-            else if (cmds[i] == AnimationCMD.TurnOffAim)
-            {
-                curCMD = AnimationCMD.TurnOffAim;
-                return;
-            }
-            curCMD = cmds[i];
-        }
-    }
     public override void OnUpdate()
     {
         bool complete = _anim.AnimPlay(curAnimData, ref _irow);

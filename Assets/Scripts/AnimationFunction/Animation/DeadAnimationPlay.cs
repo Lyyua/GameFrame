@@ -3,18 +3,17 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurnOffAimPlay : BaseAnimationPlay
+public class DeadAnimationPlay : BaseAnimationPlay
 {
     AnimationCMD curCMD;
-    AnimationCMD lastCMD;
 
     private GameObject _player;
     private AnimationNodesCycle _anim;
     private SignalDispatchSystem _sys;
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
     int _irow = 0;
-
-    public TurnOffAimPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
+    public int deadDir;
+    public DeadAnimationPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
     {
         _player = player;
         _anim = anim;
@@ -24,21 +23,27 @@ public class TurnOffAimPlay : BaseAnimationPlay
     public override void HandleInput(ref AnimationState state, ref BaseAnimationPlay curAnim, List<AnimationCMD> cmds)
     {
         curAnim = this;
-        curAnimData = ClientGameManager.instance.animAssetInfo.shootStand_idle;
-        state = AnimationState.TurnOffAim;
+        if (deadDir > 5)
+        {
+            curAnimData = ClientGameManager.instance.animAssetInfo.dead_stand_qian;
+        }
+        else
+        {
+            curAnimData = ClientGameManager.instance.animAssetInfo.dead_stand_hou;
+        }
+        state = AnimationState.Dead;
     }
 
     public override void OnExit()
     {
         _irow = 0;
     }
+
     public override void OnUpdate()
     {
         bool complete = _anim.AnimPlay(curAnimData, ref _irow);
         if (complete)
         {
-            _irow = 0;
-            _sys.SetCurAnim(_sys.idle, AnimationCMD.None);
         }
         else
         {
