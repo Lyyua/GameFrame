@@ -5,24 +5,22 @@ using UnityEngine;
 
 public class AimToSquatPlay : BaseAnimationPlay
 {
-    private GameObject _player;
-    private AnimationNodesCycle _anim;
-    private SignalDispatchSystem _sys;
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
     int _irow = 0;
 
-    public AimToSquatPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
+    public AimToSquatPlay()
     {
-        _player = player;
-        _anim = anim;
-        _sys = sys;
     }
 
-    public override void HandleInput(ref AnimationState state, ref BaseAnimationPlay curAnim, List<AnimationCMD> cmds)
+    public override AnimationCMD CMDFilter(List<AnimationCMD> cmds)
     {
-        curAnim = this;
-        curAnimData = ClientGameManager.instance.animAssetInfo.shoot_stand_squat;
-        state = AnimationState.IdleToSquat;
+        return AnimationCMD.None;
+    }
+
+    public override void HandleInput(AnimationCMD cmd)
+    {
+        AnimationSystem.Instance.curAnim = this;
+        curAnimData = AnimationSystem.Instance.animInfo.shoot_stand_squat;
     }
 
     public override void OnExit()
@@ -32,12 +30,12 @@ public class AimToSquatPlay : BaseAnimationPlay
     public override void OnUpdate()
     {
         bool complete = false;
-        complete = _anim.AnimPlayLowerBody(curAnimData, ref _irow);
+        complete = AnimationSystem.Instance.animCycle.AnimPlayLowerBody(curAnimData, ref _irow);
 
         if (complete)
         {
             OnExit();
-            _sys.SetCurAnim(_sys.squat, AnimationCMD.None);
+            AnimationFactory.GetAnimation<SquatAnimationPlay>().HandleInput(AnimationCMD.None);
         }
         else
         {

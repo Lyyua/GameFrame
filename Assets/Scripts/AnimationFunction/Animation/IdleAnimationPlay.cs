@@ -5,58 +5,49 @@ using UnityEngine;
 
 public class IdleAnimationPlay : BaseAnimationPlay
 {
-    AnimationCMD curCMD;
 
-    private GameObject _player;
-    private AnimationNodesCycle _anim;
-    private SignalDispatchSystem _sys;
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
     int _irow = 0;
 
-    public IdleAnimationPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
+    public IdleAnimationPlay()
     {
-        _player = player;
-        _sys = sys;
-        _anim = anim;
     }
 
-    public override void HandleInput(ref AnimationState state, ref BaseAnimationPlay curAnim, List<AnimationCMD> cmds)
+    public override void HandleInput(AnimationCMD curCMD)
     {
-        CMDFilter(cmds);
-        curAnim = this;
+        AnimationSystem.Instance.curAnim = this;
         switch (curCMD)
         {
             case AnimationCMD.None:
-                curAnimData = ClientGameManager.instance.animAssetInfo.idle_stand_0;
-                state = AnimationState.Idle;
+                curAnimData = AnimationSystem.Instance.animInfo.idle_stand_0;
                 break;
             case AnimationCMD.MoveLeft:
                 OnExit();
-                _sys.SetCurAnim(_sys.idleMove, curCMD);
+                AnimationFactory.GetAnimation<IdleMoveAnimationPlay>().HandleInput(curCMD);
                 break;
             case AnimationCMD.MoveRight:
                 OnExit();
-                _sys.SetCurAnim(_sys.idleMove, curCMD);
+                AnimationFactory.GetAnimation<IdleMoveAnimationPlay>().HandleInput(curCMD);
                 break;
             case AnimationCMD.MoveFoward:
                 OnExit();
-                _sys.SetCurAnim(_sys.idleMove, curCMD);
+                AnimationFactory.GetAnimation<IdleMoveAnimationPlay>().HandleInput(curCMD);
                 break;
             case AnimationCMD.MoveBack:
                 OnExit();
-                _sys.SetCurAnim(_sys.idleMove, curCMD);
+                AnimationFactory.GetAnimation<IdleMoveAnimationPlay>().HandleInput(curCMD);
                 break;
             case AnimationCMD.TurnOnAim:
                 OnExit();
-                _sys.SetCurAnim(_sys.turnOnAim, curCMD);
+                AnimationFactory.GetAnimation<TurnOnAimPlay>().HandleInput(curCMD);
                 break;
             case AnimationCMD.Reload:
                 OnExit();
-                _sys.SetCurAnim(_sys.idleReload, curCMD);
+                AnimationFactory.GetAnimation<IdleReloadAnimationPlay>().HandleInput(curCMD);
                 break;
             case AnimationCMD.IdleToSquat:
                 OnExit();
-                _sys.SetCurAnim(_sys.idleToSquat, curCMD);
+                AnimationFactory.GetAnimation<IdleToSquatPlay>().HandleInput(curCMD);
                 break;
         }
     }
@@ -66,9 +57,9 @@ public class IdleAnimationPlay : BaseAnimationPlay
         _irow = 0;
     }
     //条件处理过滤
-    void CMDFilter(List<AnimationCMD> cmds)
+    public override AnimationCMD CMDFilter(List<AnimationCMD> cmds)
     {
-        curCMD = AnimationCMD.None;
+        AnimationCMD filterCmd = AnimationCMD.None;
         for (int i = 0; i < cmds.Count; i++)
         {
             if (cmds[i] == AnimationCMD.TurnOffAim || cmds[i] == AnimationCMD.SquatToIdle)
@@ -77,20 +68,20 @@ public class IdleAnimationPlay : BaseAnimationPlay
             }
             else if (cmds[i] == AnimationCMD.Reload)
             {
-                curCMD = AnimationCMD.Reload;
-                return;
+                filterCmd = AnimationCMD.Reload;
+                break;
             }
             else if (cmds[i] == AnimationCMD.Fire)
             {
-                _sys.autoFire.Fire(false);
                 continue;
             }
-            curCMD = cmds[i];
+            filterCmd = cmds[i];
         }
+        return filterCmd;
     }
     public override void OnUpdate()
     {
-        _anim.AnimPlay(ClientGameManager.instance.animAssetInfo.idle_stand_0, ref _irow);
+        AnimationSystem.Instance.animCycle.AnimPlay(curAnimData, ref _irow);
     }
 }
 

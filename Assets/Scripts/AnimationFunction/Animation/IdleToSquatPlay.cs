@@ -5,25 +5,23 @@ using UnityEngine;
 
 public class IdleToSquatPlay : BaseAnimationPlay
 {
-    private GameObject _player;
-    private AnimationNodesCycle _anim;
-    private SignalDispatchSystem _sys;
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
     int _irow = 0;
-    bool hasHold = false;
+    bool hasHold = false; //下蹲后姿态确认
 
-    public IdleToSquatPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
+    public IdleToSquatPlay()
     {
-        _player = player;
-        _anim = anim;
-        _sys = sys;
     }
 
-    public override void HandleInput(ref AnimationState state, ref BaseAnimationPlay curAnim, List<AnimationCMD> cmds)
+    public override AnimationCMD CMDFilter(List<AnimationCMD> cmds)
     {
-        curAnim = this;
-        curAnimData = ClientGameManager.instance.animAssetInfo.shoot_stand_squat;
-        state = AnimationState.IdleToSquat;
+        return AnimationCMD.None;
+    }
+
+    public override void HandleInput(AnimationCMD cmd)
+    {
+        AnimationSystem.Instance.curAnim = this;
+        curAnimData = AnimationSystem.Instance.animInfo.shoot_stand_squat;
     }
 
     public override void OnExit()
@@ -36,17 +34,17 @@ public class IdleToSquatPlay : BaseAnimationPlay
         bool complete = false;
         if (hasHold)
         {
-            complete = _anim.AnimPlayLowerBody(curAnimData, ref _irow);
+            complete = AnimationSystem.Instance.animCycle.AnimPlayLowerBody(curAnimData, ref _irow);
         }
         else
         {
-            complete = _anim.AnimPlay(curAnimData, ref _irow);
+            complete = AnimationSystem.Instance.animCycle.AnimPlay(curAnimData, ref _irow);
             hasHold = true;
         }
         if (complete)
         {
             OnExit();
-            _sys.SetCurAnim(_sys.squat, AnimationCMD.None);
+            AnimationFactory.GetAnimation<SquatAnimationPlay>().HandleInput(AnimationCMD.None);
         }
         else
         {

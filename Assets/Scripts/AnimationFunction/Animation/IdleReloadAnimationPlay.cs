@@ -5,31 +5,23 @@ using UnityEngine;
 
 public class IdleReloadAnimationPlay : BaseAnimationPlay
 {
-    AnimationCMD curCMD;
-
-    private GameObject _player;
-    private AnimationNodesCycle _anim;
-    private SignalDispatchSystem _sys;
+    AnimationCMD _curCmd;
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
     int _irow = 0;
 
-    public IdleReloadAnimationPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
+    public IdleReloadAnimationPlay()
     {
-        _player = player;
-        _anim = anim;
-        _sys = sys;
     }
 
-    public override void HandleInput(ref AnimationState state, ref BaseAnimationPlay curAnim, List<AnimationCMD> cmds)
+    public override void HandleInput(AnimationCMD curCmd)
     {
-        CMDFilter(cmds);
         if (_irow == 0)
         {
-            _sys.audioCtrl.PlayReLoadAudio(_anim.spawnPoint);
+            //
         }
-        curAnim = this;
-        curAnimData = ClientGameManager.instance.animAssetInfo.reload_stand;
-        state = AnimationState.IdleReload;
+        _curCmd = curCmd;
+        AnimationSystem.Instance.curAnim = this;
+        curAnimData = AnimationSystem.Instance.animInfo.reload_stand;
     }
 
     public override void OnExit()
@@ -37,42 +29,43 @@ public class IdleReloadAnimationPlay : BaseAnimationPlay
         _irow = 0;
     }
     // 可以接收移动指令并响应，只不过没写，因为需求不是这样
-    void CMDFilter(List<AnimationCMD> cmds)
+    public override AnimationCMD CMDFilter(List<AnimationCMD> cmds)
     {
-        curCMD = AnimationCMD.None;
+        AnimationCMD filterCmd = AnimationCMD.None;
         for (int i = 0; i < cmds.Count; i++)
         {
             if (cmds[i] == AnimationCMD.TurnOnAim)
             {
-                curCMD = AnimationCMD.TurnOnAim;
-                return;
+                filterCmd = AnimationCMD.TurnOnAim;
+                break;
             }
             else if (cmds[i] == AnimationCMD.TurnOffAim)
             {
-                curCMD = AnimationCMD.TurnOffAim;
-                return;
+                filterCmd = AnimationCMD.TurnOffAim;
+                break;
             }
-            curCMD = cmds[i];
+            filterCmd = cmds[i];
         }
+        return filterCmd;
     }
     public override void OnUpdate()
     {
-        bool complete = _anim.AnimPlay(curAnimData, ref _irow);
+        bool complete = AnimationSystem.Instance.animCycle.AnimPlay(curAnimData, ref _irow);
         if (complete)
         {
-            if (curCMD == AnimationCMD.TurnOnAim)
+            if (_curCmd == AnimationCMD.TurnOnAim)
             {
                 //设置下一帧
                 OnExit();
-                _sys.SetCurAnim(_sys.aim, AnimationCMD.Aim);
+                AnimationFactory.GetAnimation<AimAnimationPlay>().HandleInput(AnimationCMD.Aim);
             }
             else
             {
                 //设置下一帧
                 OnExit();
-                _sys.SetCurAnim(_sys.idle, AnimationCMD.None);
+                AnimationFactory.GetAnimation<IdleAnimationPlay>().HandleInput(AnimationCMD.None);
             }
-            _sys.autoFire.BulletCountReset();
+            //子弹充满
         }
         else
         {

@@ -5,27 +5,24 @@ using UnityEngine;
 
 public class TurnOffAimPlay : BaseAnimationPlay
 {
-    AnimationCMD curCMD;
     AnimationCMD lastCMD;
 
-    private GameObject _player;
-    private AnimationNodesCycle _anim;
-    private SignalDispatchSystem _sys;
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
     int _irow = 0;
 
-    public TurnOffAimPlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
+    public TurnOffAimPlay()
     {
-        _player = player;
-        _anim = anim;
-        _sys = sys;
     }
 
-    public override void HandleInput(ref AnimationState state, ref BaseAnimationPlay curAnim, List<AnimationCMD> cmds)
+    public override AnimationCMD CMDFilter(List<AnimationCMD> cmds)
     {
-        curAnim = this;
-        curAnimData = ClientGameManager.instance.animAssetInfo.shootStand_idle;
-        state = AnimationState.TurnOffAim;
+        return AnimationCMD.None;
+    }
+
+    public override void HandleInput(AnimationCMD cmd)
+    {
+        AnimationSystem.Instance.curAnim = this;
+        curAnimData = AnimationSystem.Instance.animInfo.shootStand_idle;
     }
 
     public override void OnExit()
@@ -34,11 +31,11 @@ public class TurnOffAimPlay : BaseAnimationPlay
     }
     public override void OnUpdate()
     {
-        bool complete = _anim.AnimPlay(curAnimData, ref _irow);
+        bool complete = AnimationSystem.Instance.animCycle.AnimPlay(curAnimData, ref _irow);
         if (complete)
         {
             _irow = 0;
-            _sys.SetCurAnim(_sys.idle, AnimationCMD.None);
+            AnimationFactory.GetAnimation<IdleAnimationPlay>().HandleInput(AnimationCMD.None);
         }
         else
         {

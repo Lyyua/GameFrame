@@ -7,25 +7,18 @@ public class SquatToIdlePlay : BaseAnimationPlay
 {
     AnimationCMD curCMD;
 
-    private GameObject _player;
     private AnimationNodesCycle _anim;
-    private SignalDispatchSystem _sys;
     private List<Nodes[]> curAnimData; //动画指令托管给循环频率
     int _irow = 0;
 
-    public SquatToIdlePlay(GameObject player, SignalDispatchSystem sys, AnimationNodesCycle anim)
+    public SquatToIdlePlay()
     {
-        _player = player;
-        _anim = anim;
-        _sys = sys;
     }
 
-    public override void HandleInput(ref AnimationState state, ref BaseAnimationPlay curAnim, List<AnimationCMD> cmds)
+    public override void HandleInput(AnimationCMD cmd)
     {
-        CMDFilter(cmds);
-        curAnim = this;
-        curAnimData = ClientGameManager.instance.animAssetInfo.shoot_squat_stand;
-        state = AnimationState.SquatToIdle;
+        AnimationSystem.Instance.curAnim = this;
+        curAnimData = AnimationSystem.Instance.animInfo.shoot_squat_stand;
     }
 
     public override void OnExit()
@@ -33,18 +26,19 @@ public class SquatToIdlePlay : BaseAnimationPlay
         _irow = 0;
     }
 
-    void CMDFilter(List<AnimationCMD> cmds)
+    public override AnimationCMD CMDFilter(List<AnimationCMD> cmds)
     {
-        curCMD = AnimationCMD.None;
+        AnimationCMD filterCmd = AnimationCMD.None;
         for (int i = 0; i < cmds.Count; i++)
         {
             if (cmds[i] == AnimationCMD.TurnOnAim)
             {
-                curCMD = AnimationCMD.Aim;
-                return;
+                filterCmd = AnimationCMD.Aim;
+                break;
             }
-            curCMD = cmds[i];
+            filterCmd = cmds[i];
         }
+        return filterCmd;
     }
 
     public override void OnUpdate()
@@ -55,11 +49,11 @@ public class SquatToIdlePlay : BaseAnimationPlay
             _irow = 0;
             if (curCMD == AnimationCMD.Aim)
             {
-                _sys.SetCurAnim(_sys.aim, AnimationCMD.Aim);
+                AnimationFactory.GetAnimation<AimAnimationPlay>().HandleInput(AnimationCMD.Aim);
             }
             else
             {
-                _sys.SetCurAnim(_sys.idle, AnimationCMD.None);
+                AnimationFactory.GetAnimation<IdleAnimationPlay>().HandleInput(AnimationCMD.None);
             }
         }
         else
