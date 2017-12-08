@@ -84,11 +84,11 @@ public class ResMgr : Singleton<ResMgr>
         return false;
     }
 
-    public UIAtlas LoadUIAtlas(string assetPath, bool cache = false)
-    {
-        return LoadRes<UIAtlas>(assetPath, cache);
-        //return LoadRes<UIAtlas>(ResUtility.UIATLAS_PATH + assetPath + ResUtility.PREFAB, cache);
-    }
+    //public UIAtlas LoadUIAtlas(string assetPath, bool cache = false)
+    //{
+    //    return LoadRes<UIAtlas>(assetPath, cache);
+    //    //return LoadRes<UIAtlas>(ResUtility.UIATLAS_PATH + assetPath + ResUtility.PREFAB, cache);
+    //}
 
     /// <summary>
     /// 根据资源路径和类型加载资源
