@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class AsyncImageDownload : MonoSingleton<AsyncImageDownload>
 {
     public string path
@@ -14,7 +14,7 @@ public class AsyncImageDownload : MonoSingleton<AsyncImageDownload>
     }
 
     private string suffix = ".png";
-    private Texture2D mCustomTexture2D;
+    private Sprite mCustomTexture2D;
     private Dictionary<string, Texture2D> mCacheTextures;
 
     protected override void OnInit()
@@ -27,20 +27,21 @@ public class AsyncImageDownload : MonoSingleton<AsyncImageDownload>
         }
     }
 
-    public void SetAsyncImage(string url, UITexture image)
+    public void SetAsyncImage(string url, Image image)
     {
         if (mCustomTexture2D == null)
         {
-            mCustomTexture2D = Resources.Load<Texture2D>("mask");
+            mCustomTexture2D = Resources.Load<Sprite>("mask");
         }
-        image.mainTexture = mCustomTexture2D;
+        image.sprite = mCustomTexture2D;
         if (string.IsNullOrEmpty(url))
         {
             return;
         }
         if (mCacheTextures.ContainsKey(url.getMd5()))
         {
-            image.mainTexture = mCacheTextures[url.getMd5()];
+            Texture2D texture = mCacheTextures[url.getMd5()];
+            image.sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
             return;
         }
         //判断是否是第一次加载这张图片
@@ -49,7 +50,8 @@ public class AsyncImageDownload : MonoSingleton<AsyncImageDownload>
             //如果之前不存在缓存文件
             StartCoroutine(DownloadImage(url, image));
         }
-        else {
+        else
+        {
             StartCoroutine(LoadLocalImage(url, image));
         }
     }
@@ -66,25 +68,27 @@ public class AsyncImageDownload : MonoSingleton<AsyncImageDownload>
         }
     }
 
-    private IEnumerator DownloadImage(string url, UITexture image)
+    private IEnumerator DownloadImage(string url, Image image)
     {
         Debug.Log("downloading new image:" + path + url);//url转换HD5作为名字
         WWW www = new WWW(url);
         yield return www;
         if (www != null && string.IsNullOrEmpty(www.error))
         {
+
             Texture2D texture = www.texture;
+
             //将图片保存至缓存路径
             byte[] pngData = texture.EncodeToPNG();
             File.WriteAllBytes(path + url.getMd5() + suffix, pngData);
             Debug.Log(texture.name);
-            image.mainTexture = texture;
+            image.sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
             addTexture(url, texture);
         }
         www.Dispose();
     }
 
-    private IEnumerator LoadLocalImage(string url, UITexture image)
+    private IEnumerator LoadLocalImage(string url, Image image)
     {
         string filePath = "file:///" + path + url.getMd5() + suffix;
         Debug.Log("getting local image:" + filePath);
@@ -93,7 +97,7 @@ public class AsyncImageDownload : MonoSingleton<AsyncImageDownload>
         if (www != null && string.IsNullOrEmpty(www.error))
         {
             Texture2D texture = www.texture;
-            image.mainTexture = texture;
+            image.sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
             addTexture(url, texture);
         }
         www.Dispose();
