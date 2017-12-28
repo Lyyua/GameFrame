@@ -43,6 +43,12 @@ public static class TransformExtension
         trans.localRotation = Quaternion.identity;
         trans.localScale = new Vector3(1, 1, 1);
     }
+    public static void ResetLocalTransform(this Transform trans)
+    {
+        trans.localPosition = Vector3.zero;
+        trans.localRotation = Quaternion.identity;
+        trans.localScale = new Vector3(1, 1, 1);
+    }
 
     public static void SetPosX(Transform trans, float x)
     {
