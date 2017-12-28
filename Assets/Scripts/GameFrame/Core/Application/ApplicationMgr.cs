@@ -135,7 +135,6 @@ public partial class ApplicationMgr : UnitySingleton<ApplicationMgr>
         gameObject.AddComponent<AsyncImageDownload>();
         gameObject.AddComponent<AudioManager>();
         gameObject.AddComponent<UIWindowMgr>();
-        gameObject.AddComponent<TimerMgr>();
         gameObject.AddComponent<UIModelMgr>();
     }
 
