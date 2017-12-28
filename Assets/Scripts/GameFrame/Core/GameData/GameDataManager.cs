@@ -32,7 +32,7 @@ public class GameDataManager : Singleton<GameDataManager>
         }
         if (cfgDic.ContainsKey(key))
         {
-            return JsonUtil.Deserialize2List<T>(cfgDic[key]);
+            return LitJson.JsonMapper.ToObject<List<T>>(cfgDic[key]);
         }
         else
         {
