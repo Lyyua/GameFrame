@@ -27,7 +27,6 @@ public class UILayerMgr : UnitySingleton<UILayerMgr>
 
     public void SetDepthAndRoot(UIBasePanel mPage)
     {
-        AdjustPageDepth(mPage);
         switch (mPage.UIPageProperty.WindowStyle)
         {
             case UIWindowStyle.GameUI:
@@ -47,27 +46,6 @@ public class UILayerMgr : UnitySingleton<UILayerMgr>
         }
     }
 
-    private void AdjustPageDepth(UIBasePanel mPage)
-    {
-        int needDepth = 1;
-        if (mPage.UIPageProperty.WindowStyle == UIWindowStyle.Fixed)
-        {
-            needDepth = Mathf.Clamp(UIUtility.GetTargetMaxDepth(FixedWindowRoot.gameObject) + 1, UILayerConst.FixedDepth, int.MaxValue);
-        }
-        else if (mPage.UIPageProperty.WindowStyle == UIWindowStyle.Normal)
-        {
-            needDepth = Mathf.Clamp(UIUtility.GetTargetMaxDepth(NormalWindowRoot.gameObject) + 1, UILayerConst.NormalDepth, int.MaxValue);
-        }
-        else if (mPage.UIPageProperty.WindowStyle == UIWindowStyle.PopUp)
-        {
-            needDepth = Mathf.Clamp(UIUtility.GetTargetMaxDepth(PopupWindowRoot.gameObject) + 1, UILayerConst.PopUpDepth, int.MaxValue);
-        }
-        if (mPage.Depth != needDepth)
-            UIUtility.SetTargetMinPanelDepth(mPage.CacheGo, needDepth);
-
-        mPage.SetPageDepth(needDepth);
-    }
-
     /// <summary>
     /// 设置隐藏与显示
     /// </summary>
@@ -81,7 +59,6 @@ public class UILayerMgr : UnitySingleton<UILayerMgr>
                 {
                     go.SetActive(true);
                 }
-                UIUtility.ChangeChildLayer(go.transform, LayerMask.NameToLayer(isVisible ? UILayerConst.ShowUILayer : UILayerConst.HideUILayer));
                 //go.layer = LayerMask.NameToLayer(isVisible ? UILayerConst.ShowUILayer : UILayerConst.HideUILayer);
                 break;
             case UILayerConst.UIDisplayMode.UIActive:
@@ -93,7 +70,6 @@ public class UILayerMgr : UnitySingleton<UILayerMgr>
             default:
                 break;
         }
-
     }
 
     protected override void OnInit()
@@ -109,35 +85,6 @@ public class UILayerMgr : UnitySingleton<UILayerMgr>
 
     private void InitRoot()
     {
-        UIDisplayMode = AppConst.UIDisplayMode;
-
-        this.mGo = this.gameObject;
-        this.mGo.name = UILayerConst.UIRoot;
-        this.mGo.layer = LayerMask.NameToLayer(UILayerConst.ShowUILayer);
-
-        this.UIWindowRoot = this.transform;
-
-        UIRoot mRoot = this.mGo.AddComponent<UIRoot>();
-        mRoot.scalingStyle = UIRoot.Scaling.ConstrainedOnMobiles;
-        mRoot.manualWidth = AppConst.AppContentWidth;
-        mRoot.manualHeight = AppConst.AppContentHeight;
-        mRoot.fitHeight = true;
-        mRoot.fitWidth = false;
-
-        GameObject camGo = CreateGameObject(UIWindowRoot, UILayerConst.Camera);
-
-        this.UICamera = camGo.AddComponent<Camera>();
-        UICamera.clearFlags = CameraClearFlags.Depth;
-        UICamera.depth = 2;
-        UICamera.cullingMask = 5 << 5;
-        UICamera.orthographic = true;
-        UICamera.orthographicSize = 1;
-        UICamera.farClipPlane = 200f;
-        UICamera.nearClipPlane = -10f;
-        UICamera.farClipPlane = 10f;
-
-        camGo.AddComponent<UICamera>();
-
         FixedWindowRoot = CreateGameObject(UIWindowRoot, UILayerConst.FixedRoot).transform;
 
         NormalWindowRoot = CreateGameObject(UIWindowRoot, UILayerConst.NormalRoot).transform;
