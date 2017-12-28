@@ -33,8 +33,8 @@ public class AppConst
 
     #region 游戏分辨率
 
-    public const int AppContentWidth = 1280;
-    public const int AppContentHeight = 720;
+    public const int AppContentWidth = 1920;
+    public const int AppContentHeight = 1080;
 
     #endregion 游戏分辨率
 
