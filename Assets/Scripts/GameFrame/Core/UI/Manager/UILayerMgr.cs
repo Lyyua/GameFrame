@@ -87,6 +87,8 @@ public class UILayerMgr : UnitySingleton<UILayerMgr>
 
     private void InitRoot()
     {
+        UIDisplayMode = AppConst.UIDisplayMode;
+
         GameObject go = new GameObject("Event System");
         go.AddComponent<EventSystem>();
         go.AddComponent<StandaloneInputModule>();
