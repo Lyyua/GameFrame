@@ -14,31 +14,6 @@ public class InputDetector : MonoBehaviour
         InputGetKeyDown(KeyCode.Escape);
 
         #endregion 安卓返回退出的功能
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            UIDialogMgr.Instance.ShowDialog(10018, null, null, "fail! error code = " + 204 + "; error msg = " + "dfhbafsbakfbasjfbafnsasdaffffffff");
-        }
-        //if (Input.GetKeyDown(KeyCode.F))
-        //{
-        //    AudioManager.Instance.GlobalVolume = 0;
-        //    MahjongAudioMgr.Instance.PlayChiPaiSound(1);
-        //    //AudioManager.Instance.StopBGAudio();
-        //    //UIWindowMgr.Instance.PushPanel<UISettingWindow>(false);
-        //}
-        //if (Input.GetKeyDown(KeyCode.G))
-        //{
-        //    AudioManager.Instance.GlobalVolume = 1;
-        //    MahjongAudioMgr.Instance.PlayChiPaiSound(1);
-        //    AudioManager.Instance.PlayCurrBGAudio();
-        //    //UIWindowMgr.Instance.PushPanel<UISettingWindow>(false);
-        //}
-        //if (Input.GetKeyDown(KeyCode.F))
-        //{
-        //    string data = "{\"country\":\"CN\", \"province\":\"Guangdong\", \"headimgurl\":\"http://wx.qlogo.cn/mmopen/HmVQlX9WkBuWU6xey4ocGHewjEwC7lr3picwqubjzUibZ8PEiaSlqL9yhfm3y17t5BaaJJYaEqDTiapKQkz2h53GmNY3De6kJlAQ/0\", \"unionid\":\"oOvCQwDImEb6DmYw5LYmu5D5vJXA\", \"openid\":\"omFZUwJ0vUusU38MVkjiZlCp0m9c\", \"nickname\":\"Cavlin\u6234\ud83d\ude04\ud83d\ude01\", \"city\":\"Jiangmen\", \"sex\":1, \"language\":\"zh_CN\", \"privilege\":[]}";
-        //    WeChatUserResp resp = JsonUtil.DeserializeObject<WeChatUserResp>(data);
-        //    Debug.Log(resp.nickname);
-        //}
     }
 
     private void InputGetKeyDown(KeyCode mKeyCode)
@@ -56,7 +31,7 @@ public class InputDetector : MonoBehaviour
                 case KeyCode.Escape:
                     if (Application.platform == RuntimePlatform.Android)
                     {
-                        UIDialogMgr.Instance.ShowDialog(10015, delegate (GameObject go) { Application.Quit(); });
+
                     }
                     break;
                 case KeyCode.A:
