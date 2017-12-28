@@ -74,7 +74,7 @@ public class ValueChangeArgs : EventArgs
 使用这种事件分发机制的好处是，我们可以把精力主要放在触发入口，而实际上触发的函数在通过key的筛选后才会运行，写代码的人只要处理好某个功能块具体的实现，而不需要去关注什么时候触发。无论是网络模块的需求，还是具体逻辑的需求，他们之间的代码不会被干扰，整体结构很干净，代码很清晰。
 
 
->* 具体实例
+具体实例 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
 定义key
 ```
@@ -104,4 +104,22 @@ public class UIGameModel : UIBaseModel
     }
 }
 ```
-上述代码中当RoomInfo被赋值时，分发事件，所有的事件在V层就已经注册到了UIGameModel.ValueUpdateEvent
+上述代码中当RoomInfo被赋值时，分发事件。（所有的事件在V层就已经注册到了UIGameModel.ValueUpdateEvent）
+
+在V层的注册代码可能会像这样：
+
+```
+private void OnValueUpdateEvent(object sender, ValueChangeArgs e)
+{
+    switch (e.key)
+    {
+        case UIGameModelConst.KEY_RefreshRoomInfo:
+            RefreshRoomInfo((RoomInfo)e.newValue);
+            break;
+    }
+}
+```
+
+在一个model实例中可能会注册很多方法，每个方法都对应了一个key，通过调用model实例的某一处触发事件分发，所有的事件都会被派发，最后会在被分发的事件中筛选。
+
+
