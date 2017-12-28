@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class UILayerMgr : UnitySingleton<UILayerMgr>
 {
@@ -85,13 +87,36 @@ public class UILayerMgr : UnitySingleton<UILayerMgr>
 
     private void InitRoot()
     {
+        GameObject go = new GameObject("Event System");
+        go.AddComponent<EventSystem>();
+        go.AddComponent<StandaloneInputModule>();
+
         FixedWindowRoot = CreateGameObject(UIWindowRoot, UILayerConst.FixedRoot).transform;
 
-        NormalWindowRoot = CreateGameObject(UIWindowRoot, UILayerConst.NormalRoot).transform;
+        NormalWindowRoot = CreateUGUIRoot(UIWindowRoot, UILayerConst.NormalRoot).transform;
 
         PopupWindowRoot = CreateGameObject(UIWindowRoot, UILayerConst.PopupRoot).transform;
 
         GameUIRoot = CreateGameObject(UIWindowRoot, UILayerConst.GameUIRoot).transform;
+    }
+
+    private GameObject CreateUGUIRoot(Transform root, string name)
+    {
+        GameObject go = new GameObject(name);
+        go.transform.parent = root;
+        //画布
+        Canvas canvas = go.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        //分辨率
+        CanvasScaler canvasScaler= go.AddComponent<CanvasScaler>();
+        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        canvasScaler.referenceResolution = new Vector2(AppConst.AppContentWidth,AppConst.AppContentHeight);
+        canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        //射线碰撞器
+        go.AddComponent<GraphicRaycaster>();
+        go.layer = LayerMask.NameToLayer(UILayerConst.ShowUILayer);
+        go.transform.localPosition = Vector3.zero;
+        return go;
     }
 
     private GameObject CreateGameObject(Transform root, string name)
