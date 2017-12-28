@@ -51,10 +51,9 @@ public class NetReceptionMgr : Singleton<NetReceptionMgr>
         }
     }
 
-    // 红黑梅方王 分别表示成 1-13,14-26,27-39，40-52,53-54
+    // 红黑梅方王 分别表示成 1-13,14-26,27-39，40-52,53-54  //重新连接
     public void ReLogin()
     {
-        //UIDialogMgr.Instance.ShowDialog(10021);
         //LoginInfoReq info = new LoginInfoReq();
         //info.username = PlayerPrefs.GetString("userName");
         //info.password = PlayerPrefs.GetString("passWord");
@@ -65,14 +64,13 @@ public class NetReceptionMgr : Singleton<NetReceptionMgr>
     {
         HeartBeatLostTime = 0;
         NetReceptionMgr.Instance.OpenHeartBeat();
-        UIDialogMgr.Instance.HideDialog();
         if (!ApplicationMgr.Instance.GameFlag.HasFlag(GFConst.FirstEnterGame))
         {
             ApplicationMgr.Instance.GameFlag.AddFlag(GFConst.FirstEnterGame);
         }
         else
         {
-            //UIMainHelper.SyncGameStatus();
+          
         }
     }
 
@@ -194,6 +192,6 @@ public class NetReceptionMgr : Singleton<NetReceptionMgr>
 
     private void OpenLoginWindow(GameObject go)
     {
-        GameMgr.Instance.EnterToLoginWindow();
+
     }
 }
