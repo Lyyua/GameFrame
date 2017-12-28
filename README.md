@@ -1,7 +1,11 @@
 
+工程目的：观察别人的商业级项目的大致内容，常规需求组成，框架写法，实际上有很多地方都用不上，或者不适配。
+
 # UI方面
 
 ## UI资源的加载
+
+由于热更方面的机制，所以很多组件都是通过find，然后手动赋值。
 
 unity组件：根据预制体层级目录动态获取,transform.FindComponent<T>在某个transform下获取，缩小搜索范围。
 
@@ -123,3 +127,15 @@ private void OnValueUpdateEvent(object sender, ValueChangeArgs e)
 在一个model实例中可能会注册很多方法，每个方法都对应了一个key，通过调用model实例的某一处触发事件分发，所有的事件都会被派发，最后会在被分发的事件中筛选。
 
 
+
+## 事件分发器
+
+key值对应的一系列委托。
+
+根据逻辑需要，注册的时候询key注册，分发的时候也是询key分发，注销部分委托依然是询key注销。
+
+只需要这样定义就可以了。
+
+```
+private Dictionary<string, Delegate> mEventMap = new Dictionary<string, Delegate>();
+```
