@@ -9,28 +9,35 @@ public class UIAnimOPChoose : UIBasePanel
 {
     private Button loadAsset;
     private Button recordAsset;
-    public UIAnimOPChoose() : base("UI/AnimEditorUI")
+    public UIAnimOPChoose() : base(new UIProperty(UIWindowStyle.Normal, UIWindowMode.NeedBack, UIColliderType.Normal, UIAnimationType.Normal, "UI/AnimEditorUI"))
     {
+    }
+
+    public override void OnRefresh()
+    {
+       
     }
 
     protected override void OnAwakeInitUI()
     {
-        loadAsset = TransformExtension.FindComponent<Button>(trans, "LoadAssetButton");
+        loadAsset = TransformExtension.FindComponent<Button>(CacheTrans, "LoadAssetButton");
         loadAsset.onClick.AddListener(ConfirmAssetInfo);
 
-        recordAsset = TransformExtension.FindComponent<Button>(trans, "RecordAssetButton");
+        recordAsset = TransformExtension.FindComponent<Button>(CacheTrans, "RecordAssetButton");
         recordAsset.onClick.AddListener(RecordAssetWindow);
     }
 
     void ConfirmAssetInfo()
     {
-        UIMainManager.Instance.HideCurPage();
-        UILoadAssetInfo inputAsset = UIMainManager.Instance.PopPanel<UILoadAssetInfo>(AnimAssetCtrl.Instance.root);
+        UIWindowMgr.Instance.PopPanel();
+        //UIMainManager.Instance.HideCurPage();
+        //UILoadAssetInfo inputAsset = UIMainManager.Instance.PopPanel<UILoadAssetInfo>(AnimAssetCtrl.Instance.root);
+        UIWindowMgr.Instance.PushPanel<UILoadAssetInfo>(AnimAssetCtrl.Instance.root);
     }
 
     void RecordAssetWindow()
     {
-        UIMainManager.Instance.HideCurPage();
-        UIMainManager.Instance.PopPanel<UIAnimFBXChoose>(AnimAssetCtrl.Instance.root);
+        UIWindowMgr.Instance.PopPanel();
+        UIWindowMgr.Instance.PushPanel<UIAnimFBXChoose>(AnimAssetCtrl.Instance.root);
     }
 }

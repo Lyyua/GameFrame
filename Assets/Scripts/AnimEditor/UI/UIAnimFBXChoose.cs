@@ -17,17 +17,17 @@ public class UIAnimFBXChoose : UIBasePanel
     private Button backButton;
     private ToggleModel activeToggle;
 
-    public UIAnimFBXChoose() : base("UI/ChooseFBXUI")
+    public UIAnimFBXChoose() : base(new UIProperty(UIWindowStyle.Normal, UIWindowMode.NeedBack, UIColliderType.Normal, UIAnimationType.Normal, "UI/ChooseFBXUI"))
     {
     }
 
     protected override void OnAwakeInitUI()
     {
-        scrollRect = TransformExtension.FindComponent<ScrollRect>(trans, "Scroll View");
+        scrollRect = TransformExtension.FindComponent<ScrollRect>(CacheTrans, "Scroll View");
         toggleGroup = scrollRect.content.GetComponent<ToggleGroup>();
-        sureButton = TransformExtension.FindComponent<Button>(trans, "SureButton");
+        sureButton = TransformExtension.FindComponent<Button>(CacheTrans, "SureButton");
         sureButton.onClick.AddListener(SureCharacter);
-        backButton = TransformExtension.FindComponent<Button>(trans, "BackButton");
+        backButton = TransformExtension.FindComponent<Button>(CacheTrans, "BackButton");
         backButton.onClick.AddListener(Back);
 
         LoadFBXItem();
@@ -67,8 +67,8 @@ public class UIAnimFBXChoose : UIBasePanel
 
     void SureCharacter()
     {
-        UIMainManager.Instance.HideCurPage();
-        UIMainManager.Instance.PopPanel<UIRecordAnim>(AnimAssetCtrl.Instance.root);
+        UIWindowMgr.Instance.PopPanel();
+        UIWindowMgr.Instance.PushPanel<UIRecordAnim>(AnimAssetCtrl.Instance.root);
         AnimAssetCtrl.Instance.InitAnimInfo();
         AnimAssetCtrl.Instance.AnimStop();
     }
@@ -79,9 +79,14 @@ public class UIAnimFBXChoose : UIBasePanel
         {
             activeToggle.toggle.isOn = false;
         }
-        UIMainManager.Instance.HideCurPage();
+        UIWindowMgr.Instance.PopPanel();
         AnimAssetCtrl.Instance.DestroyModel();
-        UIMainManager.Instance.BackPreWindow();
+        //UIWindowMgr.Instance.BackPreWindow();
+    }
+
+    public override void OnRefresh()
+    {
+        throw new NotImplementedException();
     }
 }
 

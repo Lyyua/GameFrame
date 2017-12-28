@@ -4,6 +4,7 @@ using System;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using LitJson;
+using System.IO;
 
 public class UILoadAssetInfo : UIBasePanel
 {
@@ -12,25 +13,25 @@ public class UILoadAssetInfo : UIBasePanel
     private InputField assetBundleName;
     private InputField assetName;
 
-    public UILoadAssetInfo() : base("UI/LoadAssetInfoUI")
+    public UILoadAssetInfo() : base(new UIProperty(UIWindowStyle.Normal, UIWindowMode.NeedBack, UIColliderType.Normal, UIAnimationType.Normal, "UI/LoadAssetInfoUI"))
     {
     }
 
     protected override void OnAwakeInitUI()
     {
-        startLoad = TransformExtension.FindComponent<Button>(trans, "StartLoad");
+        startLoad = TransformExtension.FindComponent<Button>(CacheTrans, "StartLoad");
         startLoad.onClick.AddListener(LoadAsset);
 
-        backButton = TransformExtension.FindComponent<Button>(trans, "BackButton");
+        backButton = TransformExtension.FindComponent<Button>(CacheTrans, "BackButton");
         backButton.onClick.AddListener(Back);
 
-        assetBundleName = TransformExtension.FindComponent<InputField>(trans, "AssetBundleName");
-        assetName = TransformExtension.FindComponent<InputField>(trans, "AssetName");
+        assetBundleName = TransformExtension.FindComponent<InputField>(CacheTrans, "AssetBundleName");
+        assetName = TransformExtension.FindComponent<InputField>(CacheTrans, "AssetName");
     }
 
     void LoadAsset()
     {
-        UIMainManager.Instance.StartCoroutine(LoadAssetAsync());
+        ApplicationMgr.Instance.StartCoroutine(LoadAssetAsync());
     }
 
     IEnumerator LoadAssetAsync()
@@ -41,12 +42,31 @@ public class UILoadAssetInfo : UIBasePanel
         NodesSaveInfoStruct ns = www.assetBundle.LoadAsset<NodesSaveInfoStruct>(assetName.text);
         AnimAssetCtrl.Instance.SetAnimList(JsonMapper.ToObject<List<Nodes[]>>(ns.GetNodesInfo()));
         www.Dispose();
-        UIMainManager.Instance.ShutPanel<UILoadAssetInfo>();
-        UIMainManager.Instance.PopPanel<UIAnimCommission>(AnimAssetCtrl.Instance.root);
+        AnimInit();
+        AnimAssetCtrl.Instance.InitAnimInfo();
+        UIWindowMgr.Instance.PopPanel();
+        UIWindowMgr.Instance.PushPanel<UIAnimCommission>(AnimAssetCtrl.Instance.root);
+    }
+
+    void AnimInit()
+    {
+        DirectoryInfo d = new DirectoryInfo(Application.dataPath + "/Resources/FBX/");
+        FileInfo[] info = d.GetFiles();
+
+        GameObject temp = GameObject.Instantiate(Resources.Load("FBX/" + info[0].Name.EndsWith(".fbx"))) as GameObject;
+        temp.transform.parent = AnimAssetCtrl.Instance.modelRoot;
+        temp.transform.localPosition = Vector3.zero;
+        AnimAssetCtrl.Instance.SetModel(temp);
     }
 
     void Back()
     {
-        UIMainManager.Instance.BackPreWindow();
+        //UIMainManager.Instance.BackPreWindow();
+        UIWindowMgr.Instance.PopPanel();
+    }
+
+    public override void OnRefresh()
+    {
+        throw new NotImplementedException();
     }
 }

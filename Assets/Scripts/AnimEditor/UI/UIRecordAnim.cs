@@ -3,9 +3,10 @@ using System.Collections;
 using System;
 using UnityEngine.UI;
 
+
 public class UIRecordAnim : UIBasePanel
 {
-    public UIRecordAnim() : base("UI/RecordAnimUI")
+    public UIRecordAnim() : base(new UIProperty(UIWindowStyle.Normal, UIWindowMode.NeedBack, UIColliderType.Normal, UIAnimationType.Normal, "UI/RecordAnimUI"))
     {
     }
 
@@ -20,25 +21,20 @@ public class UIRecordAnim : UIBasePanel
 
     protected override void OnAwakeInitUI()
     {
-        showAnimButton = TransformExtension.FindComponent<Button>(trans, "ShowAnimButton");
+        showAnimButton = TransformExtension.FindComponent<Button>(CacheTrans, "ShowAnimButton");
         showAnimButton.onClick.AddListener(ShowAnim);
-        recordButton = TransformExtension.FindComponent<Button>(trans, "RecordButton");
+        recordButton = TransformExtension.FindComponent<Button>(CacheTrans, "RecordButton");
         recordButton.onClick.AddListener(StartRecord);
-        startCommissionButton = TransformExtension.FindComponent<Button>(trans, "StartCommissionButton");
+        startCommissionButton = TransformExtension.FindComponent<Button>(CacheTrans, "StartCommissionButton");
         startCommissionButton.onClick.AddListener(StartCommission);
-        startExportButton = TransformExtension.FindComponent<Button>(trans, "StartExportButton");
+        startExportButton = TransformExtension.FindComponent<Button>(CacheTrans, "StartExportButton");
         startExportButton.onClick.AddListener(StartExport);
-        backButton = TransformExtension.FindComponent<Button>(trans, "BackButton");
+        backButton = TransformExtension.FindComponent<Button>(CacheTrans, "BackButton");
         backButton.onClick.AddListener(Back);
 
-        showPlayStyle = TransformExtension.FindComponent<Dropdown>(trans, "ShowPlayStyle");
+        showPlayStyle = TransformExtension.FindComponent<Dropdown>(CacheTrans, "ShowPlayStyle");
 
-        recordStyle = TransformExtension.FindComponent<Dropdown>(trans, "RecordStyle");
-
-    }
-
-    public override void OnFixedUpdate()
-    {
+        recordStyle = TransformExtension.FindComponent<Dropdown>(CacheTrans, "RecordStyle");
 
     }
 
@@ -55,31 +51,27 @@ public class UIRecordAnim : UIBasePanel
 
     private void StartCommission()
     {
-        UIMainManager.Instance.HideCurPage();
-        UIMainManager.Instance.PopPanel<UIAnimCommission>(AnimAssetCtrl.Instance.root);
+        UIWindowMgr.Instance.PopPanel();
+        UIWindowMgr.Instance.PushPanel<UIAnimCommission>();
+        //UIMainManager.Instance.HideCurPage();
+        //UIMainManager.Instance.PopPanel<UIAnimCommission>(AnimAssetCtrl.Instance.root);
     }
 
     private void Back()
     {
         AnimAssetCtrl.Instance.HeadParentNULL();
-        UIMainManager.Instance.BackPreWindow();
+        //UIMainManager.Instance.BackPreWindow();
+        UIWindowMgr.Instance.PopPanel();
     }
 
     private void StartExport()
     {
-        UIMainManager.Instance.ShutPanel<UIRecordAnim>();
-        UIMainManager.Instance.PopPanel<UIExportAssetInfo>(AnimAssetCtrl.Instance.root);
+        UIWindowMgr.Instance.PopPanel();
+        //UIMainManager.Instance.ShutPanel<UIRecordAnim>();
+        //UIMainManager.Instance.PopPanel<UIExportAssetInfo>(AnimAssetCtrl.Instance.root);
     }
-
-    protected override void OnActiveBefore()
-    {
-        startCommissionButton.interactable = false;
-        UIMainManager.Instance.RegisteFixedUpdate(OnFixedUpdate);
-    }
-
     protected override void OnExitBefore()
     {
-        UIMainManager.Instance.LogOutFixedUpdate(OnFixedUpdate);
     }
 
     private void ShowAnim()
@@ -119,4 +111,11 @@ public class UIRecordAnim : UIBasePanel
             }
         }
     }
+
+    public override void OnRefresh()
+    {
+        startCommissionButton.interactable = false;
+    }
 }
+
+

@@ -20,7 +20,7 @@ public class AnimAssetCtrl : MonoBehaviour
 
     private void Start()
     {
-        UIMainManager.Instance.PopPanel<UIAnimOPChoose>(root);
+        UIWindowMgr.Instance.PushPanel<UIAnimOPChoose>();
         _instance = this;
     }
 

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UIAnimCommission : UIBasePanel
 {
-    public UIAnimCommission() : base("UI/CommissionUI")
+    public UIAnimCommission() : base(new UIProperty(UIWindowStyle.Normal,UIWindowMode.NeedBack,UIColliderType.Normal,UIAnimationType.Normal, "UI/CommissionUI"))
     {
     }
 
@@ -46,26 +46,26 @@ public class UIAnimCommission : UIBasePanel
 
     protected override void OnAwakeInitUI()
     {
-        commissionButton = TransformExtension.FindComponent<Button>(trans, "CommissionButton");
+        commissionButton = TransformExtension.FindComponent<Button>(CacheTrans, "CommissionButton");
         commissionButton.onClick.AddListener(StartCommission);
-        frameCommissionButton = TransformExtension.FindComponent<Button>(trans, "FrameCommissionButton");
+        frameCommissionButton = TransformExtension.FindComponent<Button>(CacheTrans, "FrameCommissionButton");
         frameCommissionButton.onClick.AddListener(StartFrameCommission);
-        nextFrameButton = TransformExtension.FindComponent<Button>(trans, "NextFrameButton");
+        nextFrameButton = TransformExtension.FindComponent<Button>(CacheTrans, "NextFrameButton");
         nextFrameButton.onClick.AddListener(NextFrame);
-        stopCommissionButton = TransformExtension.FindComponent<Button>(trans, "StopCommissionButton");
+        stopCommissionButton = TransformExtension.FindComponent<Button>(CacheTrans, "StopCommissionButton");
         stopCommissionButton.onClick.AddListener(StopCommission);
-        updateFrameInfoButton = TransformExtension.FindComponent<Button>(trans, "UpdateFrameInfoButton");
+        updateFrameInfoButton = TransformExtension.FindComponent<Button>(CacheTrans, "UpdateFrameInfoButton");
         updateFrameInfoButton.onClick.AddListener(UpdateFrameInfoClick);
-        frameRevertButton = TransformExtension.FindComponent<Button>(trans, "FrameRevertButton");
+        frameRevertButton = TransformExtension.FindComponent<Button>(CacheTrans, "FrameRevertButton");
         frameRevertButton.onClick.AddListener(FrameRevertClick);
 
-        Transform curFrameCountPivot = TransformExtension.FindComponent<Transform>(trans, "CurFrameCount");
+        Transform curFrameCountPivot = TransformExtension.FindComponent<Transform>(CacheTrans, "CurFrameCount");
         curFrameCount = TransformExtension.FindComponent<Text>(curFrameCountPivot, "Text");
 
-        backButton = TransformExtension.FindComponent<Button>(trans, "BackButton");
+        backButton = TransformExtension.FindComponent<Button>(CacheTrans, "BackButton");
         backButton.onClick.AddListener(Back);
 
-        frameInfoPivot = TransformExtension.FindComponent<Transform>(trans, "FrameInfoPivot");
+        frameInfoPivot = TransformExtension.FindComponent<Transform>(CacheTrans, "FrameInfoPivot");
 
         pxo = TransformExtension.FindComponent<InputField>(frameInfoPivot, "PXOffset");
         pyo = TransformExtension.FindComponent<InputField>(frameInfoPivot, "PYOffset");
@@ -78,13 +78,13 @@ public class UIAnimCommission : UIBasePanel
         sureButton = TransformExtension.FindComponent<Button>(frameInfoPivot, "SureButton");
         sureButton.onClick.AddListener(SureFrameInfoClick);
 
-        frameCutButton = TransformExtension.FindComponent<Button>(trans, "FrameCutButton");
+        frameCutButton = TransformExtension.FindComponent<Button>(CacheTrans, "FrameCutButton");
         frameCutButton.onClick.AddListener(ShowCutFrame);
 
-        curFrameCutButton = TransformExtension.FindComponent<Button>(trans, "CurFrameCutButton");
+        curFrameCutButton = TransformExtension.FindComponent<Button>(CacheTrans, "CurFrameCutButton");
         curFrameCutButton.onClick.AddListener(CurFrameCut);
 
-        frameCutInfoPivot = TransformExtension.FindComponent<Transform>(trans, "FrameCutInfoPivot");
+        frameCutInfoPivot = TransformExtension.FindComponent<Transform>(CacheTrans, "FrameCutInfoPivot");
 
         frameStart = TransformExtension.FindComponent<InputField>(frameCutInfoPivot, "FrameStart");
         frameEnd = TransformExtension.FindComponent<InputField>(frameCutInfoPivot, "FrameEnd");
@@ -95,12 +95,12 @@ public class UIAnimCommission : UIBasePanel
         allAplyButton = TransformExtension.FindComponent<Button>(frameInfoPivot, "AllAplyButton");
         allAplyButton.onClick.AddListener(AllFrameAply);
 
-        commissionPlayStyle = TransformExtension.FindComponent<Dropdown>(trans, "CommissionPlayStyle");
+        commissionPlayStyle = TransformExtension.FindComponent<Dropdown>(CacheTrans, "CommissionPlayStyle");
 
         StartFrameCommission();
     }
 
-    public override void OnUpdate()
+    public void OnUpdate()
     {
         if (!frameInfoPivot.gameObject.activeSelf) return;
         try
@@ -205,7 +205,7 @@ public class UIAnimCommission : UIBasePanel
 
     void Back()
     {
-        UIMainManager.Instance.BackPreWindow();
+        UIWindowMgr.Instance.PopPanel();
     }
 
     private void StopCommission()
@@ -277,14 +277,23 @@ public class UIAnimCommission : UIBasePanel
 
     }
 
-    protected override void OnActiveBefore()
+    protected override void RegisterEvent()
     {
-        UIMainManager.Instance.RegisteUpdate(OnUpdate);
+        ApplicationMgr.Instance.onUpdate += OnUpdate;
     }
 
     protected override void OnExitBefore()
     {
         ConfirmAnimOpShut();
-        UIMainManager.Instance.LogOutUpdate(OnUpdate);
+    }
+
+    protected override void RemoveEvent()
+    {
+        ApplicationMgr.Instance.onUpdate -= OnUpdate;
+    }
+
+    public override void OnRefresh()
+    {
+       
     }
 }

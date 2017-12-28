@@ -7,7 +7,7 @@ using UnityEditor;
 
 public class UIExportAssetInfo : UIBasePanel
 {
-    public UIExportAssetInfo() : base("UI/ExportAssetInfoUI")
+    public UIExportAssetInfo() : base(new UIProperty(UIWindowStyle.Normal, UIWindowMode.NeedBack, UIColliderType.Normal, UIAnimationType.Normal, "UI/ExportAssetInfoUI"))
     {
     }
 
@@ -16,10 +16,10 @@ public class UIExportAssetInfo : UIBasePanel
 
     protected override void OnAwakeInitUI()
     {
-        export = TransformExtension.FindComponent<Button>(trans, "ExportButton");
+        export = TransformExtension.FindComponent<Button>(CacheTrans, "ExportButton");
         export.onClick.AddListener(ExportAsset);
 
-        assetNameInput = TransformExtension.FindComponent<InputField>(trans, "AssetNameInput");
+        assetNameInput = TransformExtension.FindComponent<InputField>(CacheTrans, "AssetNameInput");
     }
 
     private void ExportAsset()
@@ -28,6 +28,11 @@ public class UIExportAssetInfo : UIBasePanel
         string json = AnimAssetCtrl.Instance.AnimListToString();
         ns.SetNodesInfo(json);
         AssetDatabase.CreateAsset(ns, string.Format("Assets/{0}.asset", assetNameInput.text));
-        UIMainManager.Instance.BackPreWindow();
+        UIWindowMgr.Instance.PopPanel();
+    }
+
+    public override void OnRefresh()
+    {
+        throw new NotImplementedException();
     }
 }
