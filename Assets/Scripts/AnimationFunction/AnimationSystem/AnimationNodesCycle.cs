@@ -15,8 +15,8 @@ public class AnimationNodesCycle : MonoBehaviour
     private Transform[] tempHandsNodesArray;
     private void Awake()
     {
-        tempNodesArray = body.transform.FindChild("01").GetComponentsInChildren<Transform>();
-        tempHandsNodesArray = hands.transform.FindChild("01").GetComponentsInChildren<Transform>();
+        tempNodesArray = body.transform.Find("01").GetComponentsInChildren<Transform>();
+        tempHandsNodesArray = hands.transform.Find("01").GetComponentsInChildren<Transform>();
         int tempIndex = 0;
         nodesArray = new Transform[71];
         handsNodesArray = new Transform[71];
