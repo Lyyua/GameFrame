@@ -26,7 +26,7 @@ public class AnimAssetCtrl : MonoBehaviour
 
     public void InitAnimInfo()
     {
-        nodeList = curAnim.transform.FindChild("01").GetComponentsInChildren<Transform>();
+        nodeList = curAnim.transform.Find("01").GetComponentsInChildren<Transform>();
         for (int i = 0; i < nodeList.Length; i++)
         {
             if (nodeList[i].name == "Head")
