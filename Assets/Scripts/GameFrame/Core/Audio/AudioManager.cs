@@ -148,11 +148,11 @@ public class AudioManager : MonoSingleton<AudioManager>
         //Debug.Log(source.clip.length);
         if (soundType == SoundType.Sound)
         {
-            TimerMgr.instance.Subscribe(source.clip.length, false, TimeEventType.IngoreTimeScale).OnComplete(delegate ()
-            {
-                Recycle(source);
-                if (action != null) { action(); }
-            });
+            //TimerMgr.instance.Subscribe(source.clip.length, false, TimeEventType.IngoreTimeScale).OnComplete(delegate ()
+            //{
+            //    Recycle(source);
+            //    if (action != null) { action(); }
+            //});
         }
         return source;
     }
@@ -181,11 +181,6 @@ public class AudioManager : MonoSingleton<AudioManager>
             source.pitch = pitch;
             source.Play();
         }
-        TimerMgr.instance.Subscribe(source.clip.length, false, TimeEventType.IngoreTimeScale).OnComplete(delegate ()
-        {
-            Recycle(source);
-            if (action != null) { action(); }
-        });
         return source;
     }
 
@@ -211,11 +206,6 @@ public class AudioManager : MonoSingleton<AudioManager>
             source.pitch = pitch;
             source.Play();
         }
-        TimerMgr.instance.Subscribe(source.clip.length, false, TimeEventType.IngoreTimeScale).OnComplete(delegate ()
-        {
-            Recycle(source);
-            if (action != null) { action(); }
-        });
         return source;
     }
 
