@@ -13,6 +13,9 @@ public class UIWindowMgr : MonoSingleton<UIWindowMgr>
 
 	public UIBasePanel mCurrPage;
 
+    /// <summary>
+    /// 清除导航栈内所有数据，通常来说，跳转场景前需要进行这种操作，除非某些GameObject是DontDestroyed,同时需要声明的是，栈内页面的顺序和正确性需要自己维护好
+    /// </summary>
     public void ClearNavigationStack()
     {
         if (mNavigationStack != null && mNavigationStack.Count > 0)
@@ -27,6 +30,8 @@ public class UIWindowMgr : MonoSingleton<UIWindowMgr>
         Resources.UnloadUnusedAssets();
     }
 
+    #region 加载界面
+    //预加载界面
     public void PrePushPanel<T>() where T : UIBasePanel, new()
     {
         Type t = typeof(T);
@@ -129,6 +134,7 @@ public class UIWindowMgr : MonoSingleton<UIWindowMgr>
 
         //DebugHelper.LogInfo(mNavigationStack.Count);
     }
+    #endregion
 
     private bool CheckIfNeedBack(UIBasePanel page)
     {
@@ -162,6 +168,10 @@ public class UIWindowMgr : MonoSingleton<UIWindowMgr>
 
     #region 关闭窗口
 
+
+    /// <summary>
+    ///  关闭页面并pop出导航栈
+    /// </summary>
     public void PopPanel()
     {
         if (mNavigationStack.Count <= 0) { return; }
@@ -169,6 +179,10 @@ public class UIWindowMgr : MonoSingleton<UIWindowMgr>
         mNavigationStack.Peek().OnEnter();
     }
 
+    /// <summary>
+    ///  关闭栈顶页面，如果允许回退的页面，就不pop出栈
+    /// </summary>
+    /// <typeparam name="T">根据类型名查找</typeparam>
     public void PopPanel<T>() where T : UIBasePanel, new()
     {
         string pageName = typeof(T).ToString();
@@ -179,12 +193,16 @@ public class UIWindowMgr : MonoSingleton<UIWindowMgr>
         }
     }
 
+    /// <summary>
+    /// 关闭栈顶页面，如果允许回退的页面，就不pop出栈
+    /// </summary>
+    /// <param name="target">当前页面，需要注意的是，页面导航栈需要自行维护好</param>
     public void PopPanel(UIBasePanel target)
     {
         if (target == null && !target.ActiveSelf) return;
         if (mNavigationStack != null && mNavigationStack.Count > 0)
         {
-            if (!CheckIfNeedBack(target))
+            if (CheckIfNeedBack(target))
             {
                 target.OnExit();
             }
