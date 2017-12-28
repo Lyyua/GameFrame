@@ -339,18 +339,12 @@ public class SocketClient
 
         if (dis == DisType.None)
         {
-            UIDialogMgr.Instance.ShowDialog(10014, delegate (GameObject go) { Application.Quit(); });
         }
         else if (dis == DisType.Exception)
         {
-            UIDialogMgr.Instance.ShowDialog(10017, delegate (GameObject go) { Application.Quit(); });
         }
         else
         {
-            UIDialogMgr.Instance.ShowDialog(10016, delegate (GameObject go) { NetReceptionMgr.Instance.ReConnect(); }, delegate (GameObject go) { Application.Quit(); });
-
-            //retries = 0;
-            //DialogController.Instance.ShowDialog(10016, null, null, delegate (Hashtable ha) { NetReceptionMgr.Instance.ReConnect(); }, delegate (Hashtable ha) { Application.Quit(); });
         }
         DebugHelper.LogError(string.Format("DisType:> {0} Msg: {1}", dis, msg));
     }
