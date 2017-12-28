@@ -53,12 +53,11 @@ public class AppConst
             return Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
         }
     }
-
+    //网络连接确定
     public static void CheckNetworkState()
     {
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
-            UIDialogMgr.Instance.ShowDialog(10020);
             return;
         }
     }
