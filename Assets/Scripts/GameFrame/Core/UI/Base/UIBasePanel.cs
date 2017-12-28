@@ -82,6 +82,7 @@ public abstract class UIBasePanel
 
     public void OnExit()
     {
+        RemoveEvent();
         OnExitBefore();
         OnDeactive();
     }
