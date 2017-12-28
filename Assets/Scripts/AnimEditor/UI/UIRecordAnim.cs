@@ -51,24 +51,21 @@ public class UIRecordAnim : UIBasePanel
 
     private void StartCommission()
     {
-        UIWindowMgr.Instance.PopPanel();
+        UIWindowMgr.Instance.PopPanel(this);
         UIWindowMgr.Instance.PushPanel<UIAnimCommission>();
-        //UIMainManager.Instance.HideCurPage();
-        //UIMainManager.Instance.PopPanel<UIAnimCommission>(AnimAssetCtrl.Instance.root);
     }
 
     private void Back()
     {
         AnimAssetCtrl.Instance.HeadParentNULL();
-        //UIMainManager.Instance.BackPreWindow();
         UIWindowMgr.Instance.PopPanel();
+        UIWindowMgr.Instance.PushPanel<UIAnimFBXChoose>();
     }
 
     private void StartExport()
     {
-        UIWindowMgr.Instance.PopPanel();
-        //UIMainManager.Instance.ShutPanel<UIRecordAnim>();
-        //UIMainManager.Instance.PopPanel<UIExportAssetInfo>(AnimAssetCtrl.Instance.root);
+        UIWindowMgr.Instance.PopPanel(this);
+        UIWindowMgr.Instance.PushPanel<UIExportAssetInfo>();
     }
     protected override void OnExitBefore()
     {
@@ -78,8 +75,7 @@ public class UIRecordAnim : UIBasePanel
     {
         AnimAssetCtrl.Instance.PlayAnim(showPlayStyle.value);
     }
-
-
+    
     IEnumerator RecordData()
     {
         AnimAssetCtrl.Instance.AnimListClear();

@@ -33,6 +33,6 @@ public class UIExportAssetInfo : UIBasePanel
 
     public override void OnRefresh()
     {
-        throw new NotImplementedException();
+      
     }
 }

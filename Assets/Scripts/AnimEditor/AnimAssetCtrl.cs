@@ -8,7 +8,6 @@ public class AnimAssetCtrl : MonoBehaviour
 {
     private static AnimAssetCtrl _instance;
     public static AnimAssetCtrl Instance { get { return _instance; } }
-    public Transform root;
     public Transform modelRoot;
     public GameObject headObj;
     private Animation curAnim;

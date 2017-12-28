@@ -29,15 +29,13 @@ public class UIAnimOPChoose : UIBasePanel
 
     void ConfirmAssetInfo()
     {
-        UIWindowMgr.Instance.PopPanel();
-        //UIMainManager.Instance.HideCurPage();
-        //UILoadAssetInfo inputAsset = UIMainManager.Instance.PopPanel<UILoadAssetInfo>(AnimAssetCtrl.Instance.root);
-        UIWindowMgr.Instance.PushPanel<UILoadAssetInfo>(AnimAssetCtrl.Instance.root);
+        UIWindowMgr.Instance.PopPanel(this);
+        UIWindowMgr.Instance.PushPanel<UILoadAssetInfo>();
     }
 
     void RecordAssetWindow()
     {
-        UIWindowMgr.Instance.PopPanel();
-        UIWindowMgr.Instance.PushPanel<UIAnimFBXChoose>(AnimAssetCtrl.Instance.root);
+        UIWindowMgr.Instance.PopPanel(this);
+        UIWindowMgr.Instance.PushPanel<UIAnimFBXChoose>();
     }
 }

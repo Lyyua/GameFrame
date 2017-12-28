@@ -45,7 +45,7 @@ public class UILoadAssetInfo : UIBasePanel
         AnimInit();
         AnimAssetCtrl.Instance.InitAnimInfo();
         UIWindowMgr.Instance.PopPanel();
-        UIWindowMgr.Instance.PushPanel<UIAnimCommission>(AnimAssetCtrl.Instance.root);
+        UIWindowMgr.Instance.PushPanel<UIAnimCommission>();
     }
 
     void AnimInit()
@@ -61,12 +61,11 @@ public class UILoadAssetInfo : UIBasePanel
 
     void Back()
     {
-        //UIMainManager.Instance.BackPreWindow();
         UIWindowMgr.Instance.PopPanel();
     }
 
     public override void OnRefresh()
     {
-        throw new NotImplementedException();
+       
     }
 }

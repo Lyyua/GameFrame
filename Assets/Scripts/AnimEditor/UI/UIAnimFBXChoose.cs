@@ -67,8 +67,8 @@ public class UIAnimFBXChoose : UIBasePanel
 
     void SureCharacter()
     {
-        UIWindowMgr.Instance.PopPanel();
-        UIWindowMgr.Instance.PushPanel<UIRecordAnim>(AnimAssetCtrl.Instance.root);
+        UIWindowMgr.Instance.PopPanel(this);
+        UIWindowMgr.Instance.PushPanel<UIRecordAnim>();
         AnimAssetCtrl.Instance.InitAnimInfo();
         AnimAssetCtrl.Instance.AnimStop();
     }
@@ -86,7 +86,7 @@ public class UIAnimFBXChoose : UIBasePanel
 
     public override void OnRefresh()
     {
-        throw new NotImplementedException();
+       
     }
 }
 
