@@ -1,5 +1,4 @@
-﻿using cn.sharesdk.unity3d;
-using DG.Tweening;
+﻿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,8 +13,6 @@ public partial class ApplicationMgr : UnitySingleton<ApplicationMgr>
     private PackMode mPackMode = PackMode.None;
 
     public PackMode GamePackMode { get { return mPackMode; } }
-
-    public ShareSDK ShareSDK { get; private set; }
 
     #region 游戏的IP地址和端口号
 
@@ -87,10 +84,10 @@ public partial class ApplicationMgr : UnitySingleton<ApplicationMgr>
         AppLaunch();
         base.OnInit();
 
-        //开始获取安卓定位
+        //安卓
         if (Application.platform == RuntimePlatform.Android)
         {
-            TencentGPS.Instance.InitGps();
+        
         }
     }
 
@@ -109,8 +106,6 @@ public partial class ApplicationMgr : UnitySingleton<ApplicationMgr>
     /// </summary>
     private void AppLaunch()
     {
-        ShareSDK = this.GetComponent<ShareSDK>();
-
         //DebugMgr.EnableConsoleLog = true;
         //DebugMgr.Level = LogLevel.ALL;
         //DebugMgr.Error(Application.persistentDataPath);
@@ -122,27 +117,26 @@ public partial class ApplicationMgr : UnitySingleton<ApplicationMgr>
     {
         InitializeMgr();
 
+        //需要更新
         if (AppConst.OpenAutoUpdate)
         {
-            UIWindowMgr.Instance.PushPanel<UIVersionWindow>();
+            //UIWindowMgr.Instance.PushPanel<UIVersionWindow>();
         }
-        GameMgr.Instance.EnterToLoginWindow();
         GameDataManager.Instance.InitGameData();
     }
 
+    /// <summary>
+    /// 初始化管理类 譬如网络通信模块
+    /// </summary>
     private void InitializeMgr()
     {
         GameFlag = new GameFlag();
         DOTween.Init(true, true, LogBehaviour.ErrorsOnly);
-        gameObject.AddChild<AsyncImageDownload>();
-        gameObject.AddChild<AudioManager>();
-        gameObject.AddChild<UIWindowMgr>();
-        gameObject.AddChild<TimerMgr>();
-        gameObject.AddChild<UIModelMgr>();
-        gameObject.AddChild<ViSpeak>();
-        gameObject.AddChild<ViSpeakRecorder>();
-        NetWriter.SetUrl(SeverHost);//绑定服务器端口、只绑定一次
-        gameObject.AddChild<Net>();
+        gameObject.AddComponent<AsyncImageDownload>();
+        gameObject.AddComponent<AudioManager>();
+        gameObject.AddComponent<UIWindowMgr>();
+        gameObject.AddComponent<TimerMgr>();
+        gameObject.AddComponent<UIModelMgr>();
     }
 
     #region 程序启动细节
