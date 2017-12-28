@@ -9,7 +9,7 @@ public class AppConst
     public static readonly string ImagePath = Application.persistentDataPath + "/icon.png";
     public const int GameFrameRate = 60; //游戏帧频
     public const bool IsNetConnect = true; //是否连接网络
-    public static bool IsAsyncUI = false; //是否异步加载UI
+    public static bool IsAsyncUI = false; //是否异步加载UI ,这里的异步指的是不阻塞Unity主线程的异步，不是异步线程切换至unity主线程加载UI
 
     public static UILayerConst.UIDisplayMode UIDisplayMode = UILayerConst.UIDisplayMode.UIActive;
 
