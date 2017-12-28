@@ -30,70 +30,7 @@ public class CustomUIRoot : MonoBehaviour
 
     private static void InitRoot()
     {
-#if NGUI
-        InitNGUIRoot();
-#elif UGUI
         InitUGUIRoot();
-#endif
-    }
-
-    private static void InitNGUIRoot()
-    {
-        GameObject go = new GameObject("UIRoot");
-        go.layer = LayerMask.NameToLayer("UI");
-        m_Instance = go.GetOrAddComponent<CustomUIRoot>();
-        m_Instance.mUIRoot = go.transform;
-
-        UIRoot root = go.AddComponent<UIRoot>();
-        root.scalingStyle = UIRoot.Scaling.Constrained;
-        root.manualWidth = AppConst.AppContentWidth;
-        root.manualHeight = AppConst.AppContentHeight;
-        root.fitHeight = true;
-        root.fitWidth = false;
-
-        //go.AddComponent<UIPanel>();
-
-        //Rigidbody rigidbody = go.AddComponent<Rigidbody>();
-        //rigidbody.useGravity = false;
-        //rigidbody.isKinematic = true;
-
-        GameObject camGo = new GameObject("Camera");
-        camGo.layer = LayerMask.NameToLayer("UI");
-        camGo.transform.parent = go.transform;
-        camGo.transform.localPosition = Vector3.zero;
-
-        Camera cam = camGo.AddComponent<Camera>();
-        cam.clearFlags = CameraClearFlags.Depth;
-        cam.depth = 2;
-        cam.cullingMask = 5 << 5;
-        cam.orthographic = true;
-        cam.orthographicSize = 1;
-        cam.farClipPlane = 200f;
-        m_Instance.mUICamera = cam;
-        cam.nearClipPlane = -10f;
-        cam.farClipPlane = 10f;
-
-        camGo.AddComponent<UICamera>();
-
-        GameObject subRoot = CreateGameObject(go.transform);
-        subRoot.name = "FixedRoot";
-        m_Instance.mFixedRoot = subRoot.transform;
-
-        subRoot = CreateGameObject(go.transform);
-        subRoot.name = "NormalRoot";
-        m_Instance.mNormalRoot = subRoot.transform;
-
-        subRoot = CreateGameObject(go.transform);
-        subRoot.name = "PopupRoot";
-        m_Instance.mPopupRoot = subRoot.transform;
-
-        subRoot = CreateGameObject(go.transform);
-        subRoot.name = "TopBarRoot";
-        m_Instance.mTopBarRoot = subRoot.transform;
-
-        subRoot = CreateGameObject(go.transform);
-        subRoot.name = "GameUIRoot";
-        m_Instance.mGameUIRoot = subRoot.transform;
     }
 
     private static GameObject CreateGameObject(Transform root)
