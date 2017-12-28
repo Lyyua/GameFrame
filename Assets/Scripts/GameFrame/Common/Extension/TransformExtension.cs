@@ -32,16 +32,6 @@ public static class TransformExtension
         }
     }
 
-    public static UIEventListener GetUIEventListener<T>(this Transform trans, string name) where T : Component
-    {
-        return UIEventListener.Get(trans.FindComponent<T>(name).gameObject);
-    }
-
-    public static UIEventListener GetUIEventListener(this Transform trans, string name)
-    {
-        return UIEventListener.Get(trans.FindComponent<UIButton>(name).gameObject);
-    }
-
     public static void SetParent(this Transform go, Transform parent)
     {
         go.parent = parent;
