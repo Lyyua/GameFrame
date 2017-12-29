@@ -25,9 +25,11 @@ public class UIExportAssetInfo : UIBasePanel
     private void ExportAsset()
     {
         NodesSaveInfoStruct ns = ScriptableObject.CreateInstance<NodesSaveInfoStruct>();
-        string json = AnimAssetCtrl.Instance.AnimListToString();
+        string json = UIModelMgr.Instance.GetModel<UIAnimMadeModel>().AnimListToString();
         ns.SetNodesInfo(json);
+#if UNITY_EDITOR
         AssetDatabase.CreateAsset(ns, string.Format("Assets/{0}.asset", assetNameInput.text));
+#endif
         UIWindowMgr.Instance.PopPanel();
     }
 

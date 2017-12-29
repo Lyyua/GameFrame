@@ -35,7 +35,16 @@ public class UIRecordAnim : UIBasePanel
         showPlayStyle = TransformExtension.FindComponent<Dropdown>(CacheTrans, "ShowPlayStyle");
 
         recordStyle = TransformExtension.FindComponent<Dropdown>(CacheTrans, "RecordStyle");
+    }
 
+    protected override void OnActiveBefore()
+    {
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().InitAnimInfo();
+        if (UIModelMgr.Instance.GetModel<UIAnimMadeModel>().CurAnim)
+        {
+            UIModelMgr.Instance.GetModel<UIAnimMadeModel>().CurAnim.Stop();
+        }
+        ButtonStateInit();
     }
 
     void ButtonStateInit()
@@ -45,8 +54,8 @@ public class UIRecordAnim : UIBasePanel
 
     private void StartRecord()
     {
-        AnimAssetCtrl.Instance.PlayAnim(0);
-        AnimAssetCtrl.Instance.StartCoroutine(RecordData());
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().PlayAnim(0);
+        CoroutineMgr.Instance.StartCoroutine(RecordData());
     }
 
     private void StartCommission()
@@ -57,7 +66,7 @@ public class UIRecordAnim : UIBasePanel
 
     private void Back()
     {
-        AnimAssetCtrl.Instance.HeadParentNULL();
+        //AnimAssetCtrl.Instance.HeadParentNULL();
         UIWindowMgr.Instance.PopPanel();
         UIWindowMgr.Instance.PushPanel<UIAnimFBXChoose>();
     }
@@ -73,37 +82,39 @@ public class UIRecordAnim : UIBasePanel
 
     private void ShowAnim()
     {
-        AnimAssetCtrl.Instance.PlayAnim(showPlayStyle.value);
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().PlayAnim(showPlayStyle.value);
     }
     
     IEnumerator RecordData()
     {
-        AnimAssetCtrl.Instance.AnimListClear();
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().AnimListClear();
         if (recordStyle.value == 0)
         {
+            //fixed
             while (true)
             {
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForEndOfFrame();
-                if (AnimAssetCtrl.Instance.AnimComplete())
+                if (!UIModelMgr.Instance.GetModel<UIAnimMadeModel>().CurAnim.isPlaying)
                 {
                     startCommissionButton.interactable = true;
                     yield break;
                 }
-                AnimAssetCtrl.Instance.WriteInfo();
+                UIModelMgr.Instance.GetModel<UIAnimMadeModel>().WriteInfo();
             }
         }
         else
         {
+            //each update
             while (true)
             {
                 yield return new WaitForEndOfFrame();
-                if (AnimAssetCtrl.Instance.AnimComplete())
+                if (!UIModelMgr.Instance.GetModel<UIAnimMadeModel>().CurAnim.isPlaying)
                 {
                     startCommissionButton.interactable = true;
                     yield break;
                 }
-                AnimAssetCtrl.Instance.WriteInfo();
+                UIModelMgr.Instance.GetModel<UIAnimMadeModel>().WriteInfo();
             }
         }
     }

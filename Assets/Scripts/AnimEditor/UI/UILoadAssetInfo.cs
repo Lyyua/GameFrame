@@ -40,23 +40,23 @@ public class UILoadAssetInfo : UIBasePanel
         WWW www = new WWW("file://" + Application.dataPath + "/AssetBundles/" + assetBundleName.text);
         yield return www;
         NodesSaveInfoStruct ns = www.assetBundle.LoadAsset<NodesSaveInfoStruct>(assetName.text);
-        AnimAssetCtrl.Instance.SetAnimList(JsonMapper.ToObject<List<Nodes[]>>(ns.GetNodesInfo()));
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().SetAnimList(JsonMapper.ToObject<List<Nodes[]>>(ns.GetNodesInfo()));
         www.Dispose();
-        AnimInit();
-        AnimAssetCtrl.Instance.InitAnimInfo();
+        CreateAnimGameObject();
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().InitAnimInfo();
         UIWindowMgr.Instance.PopPanel();
         UIWindowMgr.Instance.PushPanel<UIAnimCommission>();
     }
 
-    void AnimInit()
+    void CreateAnimGameObject()
     {
         DirectoryInfo d = new DirectoryInfo(Application.dataPath + "/Resources/FBX/");
         FileInfo[] info = d.GetFiles();
 
         GameObject temp = GameObject.Instantiate(Resources.Load("FBX/" + info[0].Name.EndsWith(".fbx"))) as GameObject;
-        temp.transform.parent = AnimAssetCtrl.Instance.modelRoot;
+        temp.transform.parent = UIModelMgr.Instance.GetModel<UIAnimMadeModel>().ModelRoot;
         temp.transform.localPosition = Vector3.zero;
-        AnimAssetCtrl.Instance.SetModel(temp);
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().CurAnim = temp.GetComponent<Animation>();
     }
 
     void Back()

@@ -105,11 +105,11 @@ public class UIAnimCommission : UIBasePanel
         if (!frameInfoPivot.gameObject.activeSelf) return;
         try
         {
-            AnimAssetCtrl.Instance.SetHeadLocalPos(new Vector3(float.Parse(pxo.text),
+            UIModelMgr.Instance.GetModel<UIAnimMadeModel>().SetHeadLocalPos(new Vector3(float.Parse(pxo.text),
                 float.Parse(pyo.text),
                 float.Parse(pzo.text)));
 
-            AnimAssetCtrl.Instance.SetHeadLocalEuler(new Vector3(float.Parse(exo.text),
+            UIModelMgr.Instance.GetModel<UIAnimMadeModel>().SetHeadLocalEuler(new Vector3(float.Parse(exo.text),
                 float.Parse(eyo.text),
                 float.Parse(ezo.text)));
         }
@@ -123,7 +123,7 @@ public class UIAnimCommission : UIBasePanel
     {
         ConfirmAnimOpShut();
 
-        commission = AnimAssetCtrl.Instance.StartCoroutine(Commission());
+        commission = CoroutineMgr.Instance.StartCoroutineReturn(Commission());
     }
 
     private void StartFrameCommission()
@@ -131,16 +131,16 @@ public class UIAnimCommission : UIBasePanel
         ConfirmAnimOpShut();
         curAnimIndex = 0;
         curFrameCount.text = curAnimIndex.ToString();
-        AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
-        AnimAssetCtrl.Instance.InitCurFrameInfo();
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().NodeAnimPlay(ref curAnimIndex);
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().InitCurFrameInfo();
         curAnimIndex++;
     }
 
     private void NextFrame()
     {
         ConfirmAnimOpShut();
-        bool complete = AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
-        AnimAssetCtrl.Instance.InitCurFrameInfo();
+        bool complete = UIModelMgr.Instance.GetModel<UIAnimMadeModel>().NodeAnimPlay(ref curAnimIndex);
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().InitCurFrameInfo();
         curFrameCount.text = curAnimIndex.ToString();
         if (!complete)
         {
@@ -156,18 +156,18 @@ public class UIAnimCommission : UIBasePanel
 
     void FrameRevertClick()
     {
-        AnimAssetCtrl.Instance.FrameRevert();
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().FrameRevert();
     }
 
     void SureFrameInfoClick()
     {
-        AnimAssetCtrl.Instance.SetHeadNodeInfo(curAnimIndex);
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().SetHeadNodeInfo(curAnimIndex);
         FrameInputReset();
     }
 
     void AllFrameAply()
     {
-        AnimAssetCtrl.Instance.AllFrameOffset(new Vector3(float.Parse(pxo.text),
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().AllFrameOffset(new Vector3(float.Parse(pxo.text),
                 float.Parse(pyo.text),
                 float.Parse(pzo.text)),
                 new Vector3(float.Parse(exo.text),
@@ -194,13 +194,13 @@ public class UIAnimCommission : UIBasePanel
 
     void SureCutFrame()
     {
-        AnimAssetCtrl.Instance.AnimListCut(int.Parse(frameStart.text), int.Parse(frameEnd.text));
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().AnimListCut(int.Parse(frameStart.text), int.Parse(frameEnd.text));
         frameCutInfoPivot.gameObject.SetActive(false);
     }
 
     void CurFrameCut()
     {
-        AnimAssetCtrl.Instance.CurFramecCut(curAnimIndex);
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().CurFramecCut(curAnimIndex);
     }
 
     void Back()
@@ -212,7 +212,7 @@ public class UIAnimCommission : UIBasePanel
     {
         ConfirmAnimOpShut();
         curAnimIndex = 0;
-        AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().NodeAnimPlay(ref curAnimIndex);
         curAnimIndex = 0;
     }
 
@@ -220,9 +220,9 @@ public class UIAnimCommission : UIBasePanel
     {
         if (commission != null)
         {
-            AnimAssetCtrl.Instance.StopCoroutine(commission);
+           CoroutineMgr.Instance.StopCoroutine(commission);
         }
-        AnimAssetCtrl.Instance.AnimStop();
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().AnimStop();
     }
 
     IEnumerator Commission()
@@ -234,7 +234,7 @@ public class UIAnimCommission : UIBasePanel
             {
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForEndOfFrame();
-                AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
+                UIModelMgr.Instance.GetModel<UIAnimMadeModel>().NodeAnimPlay(ref curAnimIndex);
                 curFrameCount.text = curAnimIndex.ToString();
                 curAnimIndex++;
 
@@ -242,7 +242,7 @@ public class UIAnimCommission : UIBasePanel
                 {
                     yield return new WaitForFixedUpdate();
                     yield return new WaitForEndOfFrame();
-                    bool complete = AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
+                    bool complete = UIModelMgr.Instance.GetModel<UIAnimMadeModel>().NodeAnimPlay(ref curAnimIndex);
                     curFrameCount.text = curAnimIndex.ToString();
                     if (complete)
                     {
@@ -257,13 +257,13 @@ public class UIAnimCommission : UIBasePanel
 
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForEndOfFrame();
-                AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
+                UIModelMgr.Instance.GetModel<UIAnimMadeModel>().NodeAnimPlay(ref curAnimIndex);
                 curFrameCount.text = curAnimIndex.ToString();
                 while (true)
                 {
                     yield return new WaitForFixedUpdate();
                     yield return new WaitForEndOfFrame();
-                    bool complete = AnimAssetCtrl.Instance.NodeAnimPlay(ref curAnimIndex);
+                    bool complete = UIModelMgr.Instance.GetModel<UIAnimMadeModel>().NodeAnimPlay(ref curAnimIndex);
                     curFrameCount.text = curAnimIndex.ToString();
                     if (complete)
                     {
