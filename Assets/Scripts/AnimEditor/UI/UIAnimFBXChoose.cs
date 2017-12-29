@@ -29,8 +29,9 @@ public class UIAnimFBXChoose : UIBasePanel
         sureButton.onClick.AddListener(SureCharacter);
         backButton = TransformExtension.FindComponent<Button>(CacheTrans, "BackButton");
         backButton.onClick.AddListener(Back);
-
+        UIModelMgr.Instance.GetModel<UIAnimMadeModel>().ValueUpdateEvent += ValueUpdateEvent;
         LoadFBXItem();
+
     }
 
     void LoadFBXItem()
@@ -58,7 +59,6 @@ public class UIAnimFBXChoose : UIBasePanel
 
             UnityAction<bool> ua = tm.Click;
             temp.GetComponent<Toggle>().onValueChanged.AddListener(ua);
-            //temp.GetComponent<Toggle>().onValueChanged.AddListener((value) => { tm.Click(value); });
 
         }
         RectTransform rf = (RectTransform)toggleGroup.transform;
@@ -81,12 +81,21 @@ public class UIAnimFBXChoose : UIBasePanel
         }
         UIWindowMgr.Instance.PopPanel();
         AnimAssetCtrl.Instance.DestroyModel();
-        //UIWindowMgr.Instance.BackPreWindow();
+    }
+    public void ValueUpdateEvent(object sender, ValueChangeArgs args)
+    {
+        if (args.oldValue != null)
+        {
+            Animation oldanim = args.oldValue as Animation;
+            UnityEngine.Object.Destroy(oldanim.gameObject);
+        }
+        Animation newanim = args.newValue as Animation;
+        newanim.wrapMode = WrapMode.Loop;
     }
 
     public override void OnRefresh()
     {
-       
+
     }
 }
 
@@ -106,11 +115,18 @@ public class ToggleModel
             GameObject temp = GameObject.Instantiate(Resources.Load("FBX/" + itemName)) as GameObject;
             temp.transform.parent = AnimAssetCtrl.Instance.modelRoot;
             temp.transform.localPosition = Vector3.zero;
-            AnimAssetCtrl.Instance.SetModel(temp);
+            Animation anim = temp.GetComponent<Animation>();
+            if (anim != null)
+            {
+                UIModelMgr.Instance.GetModel<UIAnimMadeModel>().CurAnim = anim;
+            }
+            else
+            {
+                DebugHelper.LogError("不存在Animation组件,模型是否使用的是Generic或者Humoid");
+            }
         }
         else
         {
-            AnimAssetCtrl.Instance.DestroyModel();
         }
 
     }
