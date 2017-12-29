@@ -72,9 +72,19 @@ public abstract class UIBasePanel
     //public abstract void OnPause();
     //public abstract void OnResume();
 
+    /// <summary>
+    /// 通常是UI组件的初始化，只需要执行一次 
+    /// </summary>
     protected abstract void OnAwakeInitUI();
 
     public abstract void OnRefresh();
+
+    /// <summary>
+    /// 激活一个UI页面前，逻辑上可能需要重新做一些确认操作
+    /// </summary>
+    protected virtual void OnActiveBefore()
+    {
+    }
 
     protected virtual void OnExitBefore()
     {
