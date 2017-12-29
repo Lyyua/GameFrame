@@ -159,6 +159,14 @@ Prefab:
       propertyPath: m_LocalScale.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 4780c519f7013404796c0b60830ee5b8, type: 3}
+      propertyPath: m_TagString
+      value: Head
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 4780c519f7013404796c0b60830ee5b8, type: 3}
+      propertyPath: m_Name
+      value: Head
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4780c519f7013404796c0b60830ee5b8, type: 3}
   m_IsPrefabParent: 0
@@ -253,7 +261,7 @@ GameObject:
   - component: {fileID: 1384910548}
   m_Layer: 0
   m_Name: Done
-  m_TagString: Untagged
+  m_TagString: ModelRoot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -295,11 +303,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1475596454}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6af086b436d0abf439e5c6cbc3e77a4f, type: 3}
+  m_Script: {fileID: 11500000, guid: 055ed139193a0c148b2a7fa3a2664d38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelRoot: {fileID: 1384910548}
-  headObj: {fileID: 1635780526}
 --- !u!4 &1475596456
 Transform:
   m_ObjectHideFlags: 0
@@ -378,7 +384,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &1635780526 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 100000, guid: 4780c519f7013404796c0b60830ee5b8, type: 3}
-  m_PrefabInternal: {fileID: 596782369}
