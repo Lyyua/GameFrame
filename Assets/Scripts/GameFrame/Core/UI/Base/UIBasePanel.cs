@@ -65,6 +65,7 @@ public abstract class UIBasePanel
     {
         OnInit();
         UILayerMgr.Instance.SetDepthAndRoot(this);
+        OnActiveBefore();
         OnActive();
         OnRefresh();
     }
