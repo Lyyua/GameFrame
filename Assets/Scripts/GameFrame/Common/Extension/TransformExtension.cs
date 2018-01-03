@@ -31,7 +31,29 @@ public static class TransformExtension
             return null;
         }
     }
+	
+	public static T GetComponentInChildren<T>(this Transform trans, string name) where T : MonoBehaviour
+    {
+        T[] t = trans.GetComponentsInChildren<T>();
+        Transform temp = trans.Find(name);
 
+        if (t.Length != 0)
+        {
+            for (int i = 0; i < t.Length; i++)
+            {
+                if (t[i].gameObject.name == name)
+                {
+                    return t[i];
+                }
+            }
+            return default(T);
+        }
+        else
+        {
+            return default(T);
+        }
+    }
+	
     public static void SetParent(this Transform go, Transform parent)
     {
         go.parent = parent;
