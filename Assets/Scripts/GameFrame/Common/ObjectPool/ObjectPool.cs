@@ -16,7 +16,12 @@ public sealed class ObjectPool : MonoBehaviour
     static ObjectPool _instance;
     static List<GameObject> tempList = new List<GameObject>();
 
-    Dictionary<GameObject, List<GameObject>> pooledObjects = new Dictionary<GameObject, List<GameObject>>();
+    //key-->预制体
+    //value-->可用的缓存对象 
+    Dictionary<GameObject, List<GameObject>> pooledObjects = new Dictionary<GameObject, List<GameObject>>();   
+
+    //key-->实例化的GameObject 
+    //value-->预制体
     Dictionary<GameObject, GameObject> spawnedObjects = new Dictionary<GameObject, GameObject>();
 
     public StartupPoolMode startupPoolMode;
@@ -76,6 +81,7 @@ public sealed class ObjectPool : MonoBehaviour
         }
     }
 
+    #region 位置，四元数，父节点初始化
     public static T Spawn<T>(T prefab, Transform parent, Vector3 position, Quaternion rotation) where T : Component
     {
         return Spawn(prefab.gameObject, parent, position, rotation).GetComponent<T>();
@@ -100,6 +106,8 @@ public sealed class ObjectPool : MonoBehaviour
     {
         return Spawn(prefab.gameObject, null, Vector3.zero, Quaternion.identity).GetComponent<T>();
     }
+    #endregion
+
     public static GameObject Spawn(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation)
     {
         List<GameObject> list;
