@@ -14,6 +14,7 @@ public class SignatureVerify
         return true;
 #endif
 
+#if UNITY_ANDROID
         // 获取Android的PackageManager
         AndroidJavaClass Player = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
         AndroidJavaObject Activity = Player.GetStatic<AndroidJavaObject>("currentActivity");
@@ -34,5 +35,6 @@ public class SignatureVerify
             return hashCode == 8888888888;//我们签名的哈希值
         }
         return false;
+#endif
     }
 }
