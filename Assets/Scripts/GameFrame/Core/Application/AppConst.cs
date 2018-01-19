@@ -14,21 +14,21 @@ public class AppConst
     public static UILayerConst.UIDisplayMode UIDisplayMode = UILayerConst.UIDisplayMode.UIActive;
 
     public static bool OpenAutoUpdate = false; //安卓整包更新开关
-    public const string ApkUpdateWebsite = "http://112.74.168.1:8088/share/lp/index.html";
+    public const string ApkUpdateWebsite = "";
 
-    public const string AppName = "屋里宁麻将";
+    public const string AppName = "";
     public const string AppVersion = "1.0.0";
     public const int BundleVersionCode = 1;
 
-    public const string ClientPasswordKey = "j6=9=1ac";
+    public const string ClientPasswordKey = "";
 
-    public const string DevelopingIP = "192.168.55.103";
+    public const string DevelopingIP = "";
     public const int DevelopingPort = 9001;
-    public const string QAIP = "192.168.55.103";
+    public const string QAIP = "";
     public const int QAPort = 9001;
     public const string QAIP1 = "127.0.0.1";
     public const int QAPort1 = 9001;
-	public const string ReleaseIP = "192.168.55.103";
+	public const string ReleaseIP = "";
     public const int ReleasePort = 9001;
 
     #region 游戏分辨率
