@@ -18,7 +18,7 @@ public class PoolKey
     public const string FLARE = "flare";
 }
 
-public class LyuPool : MonoBehaviour
+public class LyuPool
 {
     static Dictionary<string, PoolObjectStruct> pool = new Dictionary<string, PoolObjectStruct>();
 
